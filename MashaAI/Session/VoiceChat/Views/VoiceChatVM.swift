@@ -3,9 +3,9 @@ import Combine
 import ElevenLabsSDK
 
 final class VoiceChatVM: ObservableObject {
-
+    
     private let config = ElevenLabsSDK.SessionConfig(agentId: "w63wjugjg9aztG1H9JDa")
-
+    
     func onAppear() async {
         do {
             let conversation = try await ElevenLabsSDK.Conversation.startSession(config: config, callbacks: callbacks())
@@ -15,7 +15,7 @@ final class VoiceChatVM: ObservableObject {
             print("Failed to start conversation: \(error)")
         }
     }
-
+    
     private func callbacks() -> ElevenLabsSDK.Callbacks {
         var callbacks = ElevenLabsSDK.Callbacks()
         callbacks.onConnect = { conversationId in
@@ -33,7 +33,7 @@ final class VoiceChatVM: ObservableObject {
         callbacks.onModeChange = { mode in
             print("---> Mode changed to: \(mode.rawValue)")
         }
-
+        
         return callbacks
     }
 }

@@ -13,7 +13,7 @@ extension ProfileComponent: ProfileCoordinatorElementsFactory {
     func profileVM() -> ProfileVM {
         .init()
     }
-
+    
     func profileDetailsVM() -> ProfileDetailsVM {
         .init()
     }
