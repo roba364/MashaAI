@@ -15,13 +15,13 @@ struct SessionCoordinatorView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            VoiceChatCoordinatorView(coordinator: coordinator.voiceChatCoordinator)
+            VoiceChatCoordinatorView(coordinator: coordinator.buildVoiceChatCoordinator())
                 .tabItem {
                     Label("Voice", systemImage: "mic.fill")
                 }
                 .tag(Tab.voice)
 
-            ProfileCoordinatorView(coordinator: coordinator.profileCoordinator)
+            ProfileCoordinatorView(coordinator: coordinator.buildProfileCoordinator())
                 .tabItem {
                     Label("Profile", systemImage: "person.crop.circle")
                 }

@@ -7,20 +7,28 @@ protocol SessionCoordinatorElementsFactory {
 }
 
 final class SessionCoordinator: ObservableObject {
-    let voiceChatCoordinator: VoiceChatCoordinator
-    let profileCoordinator: ProfileCoordinator
-    
+
     private let elementsFactory: SessionCoordinatorElementsFactory
-    
+
     init(
         elementsFactory: SessionCoordinatorElementsFactory
     ) {
         self.elementsFactory = elementsFactory
-        self.voiceChatCoordinator = elementsFactory.voiceChatCoordinator(navigation: .init())
-        self.profileCoordinator = elementsFactory.profileCoordinator(navigation: .init())
     }
-    
+
     func onAppear() async {
         // Можно добавить логику, если нужно
+    }
+
+    func buildVoiceChatCoordinator() -> VoiceChatCoordinator {
+        let coordinator = elementsFactory.voiceChatCoordinator(navigation: .init())
+
+        return coordinator
+    }
+
+    func buildProfileCoordinator() -> ProfileCoordinator {
+        let coordinator = elementsFactory.profileCoordinator(navigation: .init())
+
+        return coordinator
     }
 }
