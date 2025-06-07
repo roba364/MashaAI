@@ -3,6 +3,7 @@ import SwiftUI
 final class ProfileCoordinatorNavigation: NavigationStorable {
     enum Screen {
         case profile(ProfileVM)
+        case profileDetails(ProfileDetailsVM)
     }
 
     @Published
@@ -17,6 +18,8 @@ final class ProfileCoordinatorNavigation: NavigationStorable {
         switch screen {
         case .profile(let vm):
             ProfileView(viewModel: vm)
+        case .profileDetails(let vm):
+            ProfileDetailsView(viewModel: vm)
         }
     }
 }
@@ -29,12 +32,18 @@ extension ProfileCoordinatorNavigation.Screen: Hashable {
         switch (lhs, rhs) {
         case let (.profile(lvm), .profile(rvm)):
             return lvm === rvm
+        case let (.profileDetails(lvm), .profileDetails(rvm)):
+            return lvm === rvm
+        default:
+            return false
         }
     }
 
     func hash(into hasher: inout Hasher) {
         switch self {
         case .profile(let vm):
+            hasher.combine(ObjectIdentifier(vm))
+        case .profileDetails(let vm):
             hasher.combine(ObjectIdentifier(vm))
         }
     }

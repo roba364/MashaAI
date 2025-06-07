@@ -2,50 +2,25 @@ import Foundation
 import MashaUIKit
 
 protocol SessionCoordinatorElementsFactory {
-    func voiceChatCoordinator(navigation: VoiceChatCoordinatorNavigation) -> VoiceChatCoordinator
-    func profileCoordinator(navigation: ProfileCoordinatorNavigation) -> ProfileCoordinator
+  func voiceChatCoordinator(navigation: VoiceChatCoordinatorNavigation) -> VoiceChatCoordinator
+  func profileCoordinator(navigation: ProfileCoordinatorNavigation) -> ProfileCoordinator
 }
 
-final class SessionCoordinator: MutableNavigationStackCoordinating {
+final class SessionCoordinator: ObservableObject {
+  let voiceChatCoordinator: VoiceChatCoordinator
+  let profileCoordinator: ProfileCoordinator
 
-    enum Screen: Identifiable {
-        case voiceChat(VoiceChatCoordinator)
-        case profile(ProfileCoordinator)
+  private let elementsFactory: SessionCoordinatorElementsFactory
 
-        var id: ObjectIdentifier {
-            switch self {
-            case let .voiceChat(c): return .init(c)
-            case let .profile(c): return .init(c)
-            }
-        }
-    }
+  init(
+    elementsFactory: SessionCoordinatorElementsFactory
+  ) {
+    self.elementsFactory = elementsFactory
+    self.voiceChatCoordinator = elementsFactory.voiceChatCoordinator(navigation: .init())
+    self.profileCoordinator = elementsFactory.profileCoordinator(navigation: .init())
+  }
 
-    @Published
-    var stack: [Screen] = []
-
-    private let elementsFactory: SessionCoordinatorElementsFactory
-
-    init(
-        elementsFactory: SessionCoordinatorElementsFactory
-    ) {
-        self.elementsFactory = elementsFactory
-    }
-
-    func onAppear() async {
-        showVoiceChatCoordinator()
-    }
-
-    @MainActor
-    func showVoiceChatCoordinator() {
-        let coordinator = elementsFactory.voiceChatCoordinator(navigation: .init())
-
-        push(.voiceChat(coordinator))
-    }
-
-    @MainActor
-    func showProfileCoordinator() {
-        let coordinator = elementsFactory.profileCoordinator(navigation: .init())
-
-        push(.profile(coordinator))
-    }
+  func onAppear() async {
+    // Можно добавить логику, если нужно
+  }
 }

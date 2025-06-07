@@ -4,6 +4,7 @@ import SwiftUI
 @MainActor
 protocol ProfileCoordinatorElementsFactory {
     func profileVM() -> ProfileVM
+    func profileDetailsVM() -> ProfileDetailsVM
 }
 
 final class ProfileCoordinator: ObservableObject {
@@ -22,6 +23,19 @@ final class ProfileCoordinator: ObservableObject {
     @MainActor
     func showProfile() -> some View {
         let viewModel = elementsFactory.profileVM()
+        viewModel.output = .init(onDetails: { [weak self] in
+            guard let self else { return }
+
+            self.showProfileDetailsVM()
+        })
+
         return navigation.view(for: .profile(viewModel))
+    }
+
+    @MainActor
+    private func showProfileDetailsVM() {
+        let viewModel = elementsFactory.profileDetailsVM()
+
+        navigation.navigateTo(.profileDetails(viewModel))
     }
 }

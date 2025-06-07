@@ -5,6 +5,14 @@ struct ProfileView: View {
     var viewModel: ProfileVM
 
     var body: some View {
-        Text("Profile View")
+        VStack {
+            Text("Profile View")
+
+            Button {
+                viewModel.onDetails()
+            } label: {
+                Text("Profile Details")
+            }
+        }
     }
 }
