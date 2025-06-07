@@ -20,6 +20,8 @@ struct SessionCoordinatorView: View {
         switch screen {
         case .voiceChat(let c):
             VoiceChatCoordinatorView(coordinator: c)
+        case .profile(let c):
+            ProfileCoordinatorView(coordinator: c)
         }
     }
 }

@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct VoiceChatCoordinatorView: View {
+struct ProfileCoordinatorView: View {
 
     @ObservedObject
-    var coordinator: VoiceChatCoordinator
+    var coordinator: ProfileCoordinator
 
     var body: some View {
         NavigationStorableView(navigation: coordinator.navigation) {
-            coordinator.showMain()
+            coordinator.showProfile()
         }
     }
 }

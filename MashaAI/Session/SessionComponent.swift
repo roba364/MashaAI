@@ -13,4 +13,9 @@ extension SessionComponent: SessionCoordinatorElementsFactory {
         VoiceChatComponent(parent: self)
             .voiceChatCoordinator(navigation: navigation)
     }
+
+    func profileCoordinator(navigation: ProfileCoordinatorNavigation) -> ProfileCoordinator {
+        ProfileComponent(parent: self)
+            .profileCoordinator(navigation: navigation)
+    }
 }
