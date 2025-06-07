@@ -1,0 +1,108 @@
+{
+  "" : {
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Networking-master.dia",
+    "emit-module-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Networking-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Networking-master-emit-module.dia",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Networking-master.swiftdeps"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/ApiRequest.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ApiRequest~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/HttpHeader.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/HttpHeader~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/LoggingNetworkPlugin.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/LoggingNetworkPlugin~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/NetworkError.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkError~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/NetworkProvider.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/NetworkProvider~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/ParameterEncoder.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ParameterEncoder~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/ProxyNetworkProvider.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ProxyNetworkProvider~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/RequestInterceptor.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/RequestInterceptor~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/ServerEnvironment.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/ServerEnvironment~partial.swiftmodule"
+  },
+  "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/Sources/Networking/Strings.swift" : {
+    "const-values" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings.swiftconstvalues",
+    "dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings.d",
+    "diagnostics" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings.dia",
+    "index-unit-output-path" : "/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings.o",
+    "llvm-bc" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings.bc",
+    "object" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings.o",
+    "swift-dependencies" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings.swiftdeps",
+    "swiftmodule" : "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Networking/build/Networking.build/Debug-iphoneos/Networking.build/Objects-normal/arm64/Strings~partial.swiftmodule"
+  }
+}

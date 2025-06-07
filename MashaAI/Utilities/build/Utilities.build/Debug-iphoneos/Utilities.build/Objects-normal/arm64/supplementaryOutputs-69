@@ -1,0 +1,18 @@
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/Broadcasting.swift":
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Broadcasting.d"
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Broadcasting.o"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Broadcasting.swiftdeps"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Broadcasting.dia"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Broadcasting.swiftconstvalues"
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/Bundle+Additions.swift":
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Bundle+Additions.d"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Bundle+Additions.dia"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Bundle+Additions.swiftdeps"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Bundle+Additions.swiftconstvalues"
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Bundle+Additions.o"
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/Comparable+Clamped.swift":
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Comparable+Clamped.o"
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Comparable+Clamped.d"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Comparable+Clamped.swiftdeps"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Comparable+Clamped.dia"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/Comparable+Clamped.swiftconstvalues"

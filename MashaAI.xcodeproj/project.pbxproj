@@ -1,0 +1,541 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DE04E6B42DEE00FB0081EA23 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6B32DEE00FB0081EA23 /* Swinject */; };
+		DE04E6EC2DEE0EE30081EA23 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6EB2DEE0EE30081EA23 /* Utilities */; };
+		DE04E6EE2DEE0F0F0081EA23 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6ED2DEE0F0F0081EA23 /* Networking */; };
+		DE04E6F02DEE0F120081EA23 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6EF2DEE0F120081EA23 /* Logger */; };
+		DECA0E532DF36184004C8BAB /* MashaUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = DECA0E522DF36184004C8BAB /* MashaUIKit */; };
+		DECA0E612DF3793F004C8BAB /* ElevenLabsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = DECA0E602DF3793F004C8BAB /* ElevenLabsSDK */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DE04E67E2DEE003F0081EA23 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE04E6652DEE003E0081EA23 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DE04E66C2DEE003E0081EA23;
+			remoteInfo = MashaAI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		DE04E66D2DEE003E0081EA23 /* MashaAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MashaAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE04E67D2DEE003F0081EA23 /* MashaAITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MashaAITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DE04E6B82DEE03900081EA23 /* Exceptions for "MashaAI" folder in "MashaAI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Logger,
+				MashaUIKit,
+				Networking,
+				Utilities,
+			);
+			target = DE04E66C2DEE003E0081EA23 /* MashaAI */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		DE04E66F2DEE003E0081EA23 /* MashaAI */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DE04E6B82DEE03900081EA23 /* Exceptions for "MashaAI" folder in "MashaAI" target */,
+			);
+			path = MashaAI;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DE04E66A2DEE003E0081EA23 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE04E6EC2DEE0EE30081EA23 /* Utilities in Frameworks */,
+				DE04E6EE2DEE0F0F0081EA23 /* Networking in Frameworks */,
+				DE04E6F02DEE0F120081EA23 /* Logger in Frameworks */,
+				DE04E6B42DEE00FB0081EA23 /* Swinject in Frameworks */,
+				DECA0E612DF3793F004C8BAB /* ElevenLabsSDK in Frameworks */,
+				DECA0E532DF36184004C8BAB /* MashaUIKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DE04E67A2DEE003F0081EA23 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DE04E6642DEE003E0081EA23 = {
+			isa = PBXGroup;
+			children = (
+				DE04E66F2DEE003E0081EA23 /* MashaAI */,
+				DECA0E5F2DF3793F004C8BAB /* Frameworks */,
+				DE04E66E2DEE003E0081EA23 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DE04E66E2DEE003E0081EA23 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DE04E66D2DEE003E0081EA23 /* MashaAI.app */,
+				DE04E67D2DEE003F0081EA23 /* MashaAITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DECA0E5F2DF3793F004C8BAB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DE04E66C2DEE003E0081EA23 /* MashaAI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE04E6912DEE00400081EA23 /* Build configuration list for PBXNativeTarget "MashaAI" */;
+			buildPhases = (
+				DE04E6692DEE003E0081EA23 /* Sources */,
+				DE04E66A2DEE003E0081EA23 /* Frameworks */,
+				DE04E66B2DEE003E0081EA23 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DE04E66F2DEE003E0081EA23 /* MashaAI */,
+			);
+			name = MashaAI;
+			packageProductDependencies = (
+				DE04E6B32DEE00FB0081EA23 /* Swinject */,
+				DE04E6EB2DEE0EE30081EA23 /* Utilities */,
+				DE04E6ED2DEE0F0F0081EA23 /* Networking */,
+				DE04E6EF2DEE0F120081EA23 /* Logger */,
+				DECA0E522DF36184004C8BAB /* MashaUIKit */,
+				DECA0E602DF3793F004C8BAB /* ElevenLabsSDK */,
+			);
+			productName = MashaAI;
+			productReference = DE04E66D2DEE003E0081EA23 /* MashaAI.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DE04E67C2DEE003F0081EA23 /* MashaAITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE04E6942DEE00400081EA23 /* Build configuration list for PBXNativeTarget "MashaAITests" */;
+			buildPhases = (
+				DE04E6792DEE003F0081EA23 /* Sources */,
+				DE04E67A2DEE003F0081EA23 /* Frameworks */,
+				DE04E67B2DEE003F0081EA23 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DE04E67F2DEE003F0081EA23 /* PBXTargetDependency */,
+			);
+			name = MashaAITests;
+			packageProductDependencies = (
+			);
+			productName = MashaAITests;
+			productReference = DE04E67D2DEE003F0081EA23 /* MashaAITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DE04E6652DEE003E0081EA23 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					DE04E66C2DEE003E0081EA23 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					DE04E67C2DEE003F0081EA23 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = DE04E66C2DEE003E0081EA23;
+					};
+				};
+			};
+			buildConfigurationList = DE04E6682DEE003E0081EA23 /* Build configuration list for PBXProject "MashaAI" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DE04E6642DEE003E0081EA23;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DE04E6B22DEE00FB0081EA23 /* XCRemoteSwiftPackageReference "Swinject" */,
+				DECA0E5E2DF3763C004C8BAB /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = DE04E66E2DEE003E0081EA23 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DE04E66C2DEE003E0081EA23 /* MashaAI */,
+				DE04E67C2DEE003F0081EA23 /* MashaAITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DE04E66B2DEE003E0081EA23 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DE04E67B2DEE003F0081EA23 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DE04E6692DEE003E0081EA23 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DE04E6792DEE003F0081EA23 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DE04E67F2DEE003F0081EA23 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DE04E66C2DEE003E0081EA23 /* MashaAI */;
+			targetProxy = DE04E67E2DEE003F0081EA23 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		DE04E68F2DEE003F0081EA23 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DE04E6902DEE003F0081EA23 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DE04E6922DEE00400081EA23 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MashaAI/Preview Content\"";
+				DEVELOPMENT_TEAM = NJSW28K6MY;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ля записи вашего голоса при использовании голосовых функций";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.masha.com.MashaAI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DE04E6932DEE00400081EA23 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MashaAI/Preview Content\"";
+				DEVELOPMENT_TEAM = NJSW28K6MY;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ля записи вашего голоса при использовании голосовых функций";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.masha.com.MashaAI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DE04E6952DEE00400081EA23 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NJSW28K6MY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.masha.com.MashaAITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MashaAI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MashaAI";
+			};
+			name = Debug;
+		};
+		DE04E6962DEE00400081EA23 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NJSW28K6MY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.masha.com.MashaAITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MashaAI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MashaAI";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DE04E6682DEE003E0081EA23 /* Build configuration list for PBXProject "MashaAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DE04E68F2DEE003F0081EA23 /* Debug */,
+				DE04E6902DEE003F0081EA23 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DE04E6912DEE00400081EA23 /* Build configuration list for PBXNativeTarget "MashaAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DE04E6922DEE00400081EA23 /* Debug */,
+				DE04E6932DEE00400081EA23 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DE04E6942DEE00400081EA23 /* Build configuration list for PBXNativeTarget "MashaAITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DE04E6952DEE00400081EA23 /* Debug */,
+				DE04E6962DEE00400081EA23 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DE04E6B22DEE00FB0081EA23 /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.1;
+			};
+		};
+		DECA0E5E2DF3763C004C8BAB /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elevenlabs/ElevenLabsSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DE04E6B32DEE00FB0081EA23 /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE04E6B22DEE00FB0081EA23 /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
+		};
+		DE04E6EB2DEE0EE30081EA23 /* Utilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utilities;
+		};
+		DE04E6ED2DEE0F0F0081EA23 /* Networking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Networking;
+		};
+		DE04E6EF2DEE0F120081EA23 /* Logger */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Logger;
+		};
+		DECA0E522DF36184004C8BAB /* MashaUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MashaUIKit;
+		};
+		DECA0E602DF3793F004C8BAB /* ElevenLabsSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DECA0E5E2DF3763C004C8BAB /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */;
+			productName = ElevenLabsSDK;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = DE04E6652DEE003E0081EA23 /* Project object */;
+}

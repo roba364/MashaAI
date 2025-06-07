@@ -1,0 +1,18 @@
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/AsyncValueView.swift":
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AsyncValueView.dia"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AsyncValueView.swiftconstvalues"
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AsyncValueView.d"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AsyncValueView.swiftdeps"
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AsyncValueView.o"
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/ArrayBuilder.swift":
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/ArrayBuilder.o"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/ArrayBuilder.dia"
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/ArrayBuilder.d"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/ArrayBuilder.swiftdeps"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/ArrayBuilder.swiftconstvalues"
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/AppState/AppStateController.swift":
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppStateController.o"
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppStateController.d"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppStateController.swiftdeps"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppStateController.dia"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppStateController.swiftconstvalues"

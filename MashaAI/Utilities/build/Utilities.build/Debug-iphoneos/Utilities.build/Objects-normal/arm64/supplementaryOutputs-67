@@ -1,0 +1,18 @@
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/AppConfiguration.swift":
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppConfiguration.o"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppConfiguration.swiftconstvalues"
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppConfiguration.d"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppConfiguration.dia"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppConfiguration.swiftdeps"
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/AppInfo.swift":
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppInfo.d"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppInfo.dia"
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppInfo.o"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppInfo.swiftconstvalues"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppInfo.swiftdeps"
+"/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/Sources/Utilities/AppState/AppState.swift":
+  dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppState.d"
+  object: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppState.o"
+  diagnostics: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppState.dia"
+  const-values: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppState.swiftconstvalues"
+  swift-dependencies: "/Users/sergeyborovkov/Desktop/dev/evo/evolution_life/Evolution Life/Evolution Life/Utilities/build/Utilities.build/Debug-iphoneos/Utilities.build/Objects-normal/arm64/AppState.swiftdeps"
