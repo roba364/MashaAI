@@ -8,9 +8,9 @@ struct VoiceChatView: View {
         VStack {
             ConversationalAIExampleView()
         }
-//        .task {
-//            await viewModel.onAppear()
-//        }
+        //        .task {
+        //            await viewModel.onAppear()
+        //        }
     }
 }
 

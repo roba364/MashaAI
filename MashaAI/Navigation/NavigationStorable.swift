@@ -24,3 +24,16 @@ extension NavigationStorable {
         path.removeLast(path.count)
     }
 }
+
+protocol ScreenIdentifiable: Hashable {
+    var screenID: ObjectIdentifier { get }
+}
+
+extension ScreenIdentifiable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.screenID == rhs.screenID
+    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(screenID)
+    }
+}

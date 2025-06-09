@@ -3,22 +3,10 @@ import MashaUIKit
 
 protocol SessionCoordinatorElementsFactory {
     func voiceChatCoordinator(navigation: VoiceChatCoordinatorNavigation) -> VoiceChatCoordinator
+    func profileCoordinator(navigation: ProfileCoordinatorNavigation) -> ProfileCoordinator
 }
 
-final class SessionCoordinator: MutableNavigationStackCoordinating {
-
-    enum Screen: Identifiable {
-        case voiceChat(VoiceChatCoordinator)
-
-        var id: ObjectIdentifier {
-            switch self {
-            case let .voiceChat(c): return .init(c)
-            }
-        }
-    }
-
-    @Published
-    var stack: [Screen] = []
+final class SessionCoordinator: ObservableObject {
 
     private let elementsFactory: SessionCoordinatorElementsFactory
 
@@ -29,13 +17,18 @@ final class SessionCoordinator: MutableNavigationStackCoordinating {
     }
 
     func onAppear() async {
-        showVoiceChatCoordinator()
+        // Можно добавить логику, если нужно
     }
 
-    @MainActor
-    func showVoiceChatCoordinator() {
+    func buildVoiceChatCoordinator() -> VoiceChatCoordinator {
         let coordinator = elementsFactory.voiceChatCoordinator(navigation: .init())
 
-        push(.voiceChat(coordinator))
+        return coordinator
+    }
+
+    func buildProfileCoordinator() -> ProfileCoordinator {
+        let coordinator = elementsFactory.profileCoordinator(navigation: .init())
+
+        return coordinator
     }
 }

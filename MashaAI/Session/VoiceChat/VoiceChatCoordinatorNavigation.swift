@@ -1,8 +1,16 @@
 import SwiftUI
 
+// protocol ScreenIdentifiable уже определён выше, повторять не нужно
+
 final class VoiceChatCoordinatorNavigation: NavigationStorable {
-    enum Screen {
+    enum Screen: ScreenIdentifiable {
         case voiceChat(VoiceChatVM)
+
+        var screenID: ObjectIdentifier {
+            switch self {
+            case .voiceChat(let vm): return ObjectIdentifier(vm)
+            }
+        }
     }
 
     @Published
@@ -17,25 +25,6 @@ final class VoiceChatCoordinatorNavigation: NavigationStorable {
         switch screen {
         case .voiceChat(let vm):
             VoiceChatView(viewModel: vm)
-        }
-    }
-}
-
-extension VoiceChatCoordinatorNavigation.Screen: Hashable {
-    static func == (
-        lhs: VoiceChatCoordinatorNavigation.Screen,
-        rhs: VoiceChatCoordinatorNavigation.Screen
-    ) -> Bool {
-        switch (lhs, rhs) {
-        case let (.voiceChat(lvm), .voiceChat(rvm)):
-            return lvm === rvm
-        }
-    }
-
-    func hash(into hasher: inout Hasher) {
-        switch self {
-        case .voiceChat(let vm):
-            hasher.combine(ObjectIdentifier(vm))
         }
     }
 }
