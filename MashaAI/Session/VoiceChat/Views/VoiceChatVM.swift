@@ -29,7 +29,7 @@ final class VoiceChatVM: ObservableObject {
     private(set) var audioLevel: Float = 0.0
 
     @Published
-    private(set) var viewState: ViewState = .loading
+    var viewState: ViewState = .loading
 
     private let config = ElevenLabsSDK.SessionConfig(agentId: "w63wjugjg9aztG1H9JDa")
     private var currentAgentIndex = 0
@@ -87,7 +87,7 @@ final class VoiceChatVM: ObservableObject {
                     guard let self else { return }
                     print("❌ Error (\(errorCode ?? -1)): \(errorMessage)")
 
-                    self.viewState = .error
+//                    self.viewState = .error
 
                     // Игнорируем ошибки, связанные с коррекцией ответов агента (при перебивании)
                     if self.isAgentCorrectionError(errorMessage) {

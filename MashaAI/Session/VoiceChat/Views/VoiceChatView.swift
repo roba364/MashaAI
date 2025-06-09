@@ -1,7 +1,52 @@
-import ElevenLabsSDK
 import SwiftUI
-import _Concurrency
+import ElevenLabsSDK
 
+struct SpotifyWaveBar: View {
+    let delay: Double
+    let audioLevel: Float
+    let index: Int
+
+    // Высчитываем масштаб opacity на основе audioLevel (как в OrbView)
+    private var audioOpacityScale: Double {
+        let baseScale: Double = 0.2
+        let maxScale: Double = 1.0
+        let scaleFactor = min(Double(audioLevel) * 10.0, maxScale - baseScale) // Увеличил множитель до 1.0
+        return baseScale + scaleFactor
+    }
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            let time = timeline.date.timeIntervalSinceReferenceDate
+            let phase = time * 2 + delay // Скорость анимации * 2
+            let waveValue = sin(phase)
+            let normalizedWave = (waveValue + 1) / 2 // от 0 до 1
+
+            // Комбинируем базовую анимацию волны с реакцией на audioLevel
+            let baseOpacity = 0.2
+            let animatedOpacity = baseOpacity + (audioOpacityScale - baseOpacity) * normalizedWave
+
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.white.opacity(animatedOpacity))
+                .frame(width: size(for: index).width, height: size(for: index).height)
+                .animation(.easeInOut(duration: 0.1), value: audioLevel) // Плавная реакция на изменение audioLevel
+        }
+    }
+
+    private func size(for index: Int) -> (width: CGFloat, height: CGFloat) {
+        switch index {
+        case 0:
+            return (width: 80, height: 16)
+        case 1:
+            return (width: 58, height: 12)
+        case 2:
+            return (width: 40, height: 8)
+        default:
+            return (width: 24, height: 6)
+        }
+    }
+}
+
+// Обновленная основная View
 struct VoiceChatView: View {
 
     @ObservedObject
@@ -9,34 +54,6 @@ struct VoiceChatView: View {
 
     var body: some View {
         VStack {
-//            OrbView(mode: viewModel.mode, audioLevel: viewModel.audioLevel)
-
-//            VStack(spacing: 12) {
-//                Text(viewModel.agents[0].name)
-//                    .font(.title2)
-//                    .fontWeight(.semibold)
-//                    .foregroundColor(.black)
-//
-//                Text(viewModel.agents[0].description)
-//                    .font(.subheadline)
-//                    .foregroundColor(.gray)
-//
-//                // Статус соединения
-//                HStack(spacing: 8) {
-//                    Circle()
-//                        .fill(statusColor)
-//                        .frame(width: 10, height: 10)
-//                    Text(statusText)
-//                        .font(.caption)
-//                        .foregroundColor(.gray)
-//                }
-//            }
-
-//            CallButton(
-//                connectionStatus: viewModel.status,
-//                isConnecting: viewModel.isConnecting,
-//                action: { viewModel.beginConversation(agent: viewModel.agents[0]) }
-//            )
             Image(.masha)
                 .resizable()
                 .scaledToFill()
@@ -56,8 +73,8 @@ struct VoiceChatView: View {
         .onReceive(viewModel.$lastError) { error in
             guard error != nil else { return }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                viewModel.lastError = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                viewModel.viewState = .loading
             }
         }
         .onDisappear {
@@ -66,50 +83,15 @@ struct VoiceChatView: View {
         }
     }
 
-    private var statusColor: Color {
-        switch viewModel.status {
-        case .connected:
-            return .green
-        case .connecting:
-            return .orange
-        case .disconnecting:
-            return .orange
-        default:
-            return viewModel.isConnecting ? .orange : .gray
-        }
-    }
-
-    private var statusText: String {
-        if viewModel.isConnecting {
-            return viewModel.connectionRetryCount > 0 ? "Retrying... (\(viewModel.connectionRetryCount)/2)" : "Connecting..."
-        }
-        switch viewModel.status {
-        case .connected:
-            return "Connected"
-        case .connecting:
-            return "Connecting"
-        case .disconnecting:
-            return "Disconnecting"
-        default:
-            return "Disconnected"
-        }
-    }
-
     @ViewBuilder
     private func bottomView() -> some View {
-        VStack(spacing: 32) {
-            Text("Привет я Маша,\n давай начнем играть")
-                .typography(.M1.bold)
-                .foregroundStyle(.white)
-                .multilineTextAlignment(.center)
+        VStack(spacing: 24) {
+            indicatorView()
 
             Button {
-                viewModel.beginConversation()
+                handleButtonAction()
             } label: {
-                Image(.startButton)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 202, height: 105)
+                actionButton()
             }
             .buttonStyle(.plain)
             .animateAppear(.optionButton(delay: 0.4))
@@ -127,6 +109,40 @@ struct VoiceChatView: View {
     }
 
     @ViewBuilder
+    private func indicatorView() -> some View {
+        ZStack {
+            Text("Привет я Маша,\n давай начнем играть")
+                .typography(.M1.bold)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
+                .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
+
+            if viewModel.viewState == .connected {
+                spotifyWaves()
+                    .scaleEffect(1.0)
+                    .opacity(1.0)
+                    .animation(.easeInOut(duration: 0.3).delay(0.15), value: viewModel.viewState)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func spotifyWaves() -> some View {
+        VStack(spacing: 8) { // Горизонтальное расположение как в Spotify
+            ForEach(0..<4, id: \.self) { index in
+                SpotifyWaveBar(
+                    delay: Double(index) * 1.0, // Больше задержки для заметного эффекта
+                    audioLevel: viewModel.audioLevel,
+                    index: index
+                )
+            }
+        }
+        .frame(height: 20)
+    }
+
+    @ViewBuilder
     private func alertView() -> some View {
         if case .error = viewModel.viewState {
             VStack {
@@ -138,72 +154,37 @@ struct VoiceChatView: View {
             .animateAppear(.alertAppear(delay: 0.1))
         }
     }
-}
 
-// MARK: - Call Button Component
-struct CallButton: View {
-    let connectionStatus: ElevenLabsSDK.Status
-    let isConnecting: Bool
-    let action: () -> Void
-
-    private var buttonIcon: String {
-        if isConnecting {
-            return "phone.arrow.up.right.fill"
-        }
-
-        switch connectionStatus {
+    private func handleButtonAction() {
+        switch viewModel.viewState {
+        case .loading, .error:
+            viewModel.beginConversation()
         case .connected:
-            return "phone.down.fill"
-        case .connecting:
-            return "phone.arrow.up.right.fill"
-        case .disconnecting:
-            return "phone.arrow.down.left.fill"
-        default:
-            return "phone.fill"
+            viewModel.stopConversation()
         }
     }
 
-    private var buttonColor: Color {
-        if isConnecting {
-            return .orange
+    @ViewBuilder
+    private func actionButton() -> some View {
+        ZStack {
+            // Start Button
+            Image(.startButton)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 202, height: 105)
+                .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
+                .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
+
+            // Stop Button
+            Image(.stopButton)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 202, height: 105)
+                .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
+                .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
+                .animation(.easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0), value: viewModel.viewState)
         }
-
-        switch connectionStatus {
-        case .connected:
-            return .red
-        case .connecting, .disconnecting:
-            return .gray
-        default:
-            return .blue
-        }
-    }
-
-    private var isButtonDisabled: Bool {
-        return connectionStatus == .connecting || connectionStatus == .disconnecting
-    }
-
-    var body: some View {
-        Button(action: action) {
-            ZStack {
-                Circle()
-                    .fill(buttonColor)
-                    .frame(width: 70, height: 70)
-                    .shadow(color: buttonColor.opacity(0.3), radius: isButtonDisabled ? 2 : 8, x: 0, y: 4)
-                    .opacity(isButtonDisabled ? 0.7 : 1.0)
-
-                if isConnecting {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                        .scaleEffect(0.9)
-                } else {
-                    Image(systemName: buttonIcon)
-                        .font(.system(size: 26, weight: .medium))
-                        .foregroundColor(.white)
-                }
-            }
-        }
-        .disabled(isButtonDisabled)
-        .padding(.bottom, 50)
     }
 }
 
