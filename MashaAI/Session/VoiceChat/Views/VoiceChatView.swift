@@ -3,71 +3,61 @@ import SwiftUI
 import _Concurrency
 
 struct VoiceChatView: View {
+
     @ObservedObject
     var viewModel: VoiceChatVM
 
     var body: some View {
-        ZStack {
-            GeometryReader { geometry in
-                VStack(spacing: 30) {
-                    Spacer()
+        VStack {
+//            OrbView(mode: viewModel.mode, audioLevel: viewModel.audioLevel)
 
-                    OrbView(mode: viewModel.mode, audioLevel: viewModel.audioLevel)
+//            VStack(spacing: 12) {
+//                Text(viewModel.agents[0].name)
+//                    .font(.title2)
+//                    .fontWeight(.semibold)
+//                    .foregroundColor(.black)
+//
+//                Text(viewModel.agents[0].description)
+//                    .font(.subheadline)
+//                    .foregroundColor(.gray)
+//
+//                // Статус соединения
+//                HStack(spacing: 8) {
+//                    Circle()
+//                        .fill(statusColor)
+//                        .frame(width: 10, height: 10)
+//                    Text(statusText)
+//                        .font(.caption)
+//                        .foregroundColor(.gray)
+//                }
+//            }
 
-                    VStack(spacing: 12) {
-                        Text(viewModel.agents[0].name)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.black)
+//            CallButton(
+//                connectionStatus: viewModel.status,
+//                isConnecting: viewModel.isConnecting,
+//                action: { viewModel.beginConversation(agent: viewModel.agents[0]) }
+//            )
+            Image(.masha)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 300, height: 400)
+                .padding(.bottom, 270)
+                .animateAppear(.optionButton(delay: 0.8))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        .overlay(alignment: .bottom, content: bottomView)
+        .background {
+            Image(.voiceBackground)
+                .resizable()
+                .scaledToFill()
+                .edgesIgnoringSafeArea(.all)
+        }
+        .overlay(alignment: .top, content: alertView)
+        .onReceive(viewModel.$lastError) { error in
+            guard error != nil else { return }
 
-                        Text(viewModel.agents[0].description)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-
-                        // Статус соединения
-                        HStack(spacing: 8) {
-                            Circle()
-                                .fill(statusColor)
-                                .frame(width: 10, height: 10)
-                            Text(statusText)
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                        }
-
-                        // Показываем ошибки
-                        if let error = viewModel.lastError {
-                            Text(error)
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 20)
-                                .lineLimit(2)
-                        }
-                    }
-
-                    CallButton(
-                        connectionStatus: viewModel.status,
-                        isConnecting: viewModel.isConnecting,
-                        action: { viewModel.beginConversation(agent: viewModel.agents[0]) }
-                    )
-                }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-            }
-
-            // Заменяем отсутствующий logo на текст или системную иконку
-            VStack {
-                HStack {
-                    Image(systemName: "brain.head.profile")
-                        .font(.title2)
-                        .foregroundColor(.black)
-                    Text("MashaAI")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.black)
-                }
-                .padding(.top, 16)
-
-                Spacer()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                viewModel.lastError = nil
             }
         }
         .onDisappear {
@@ -102,6 +92,50 @@ struct VoiceChatView: View {
             return "Disconnecting"
         default:
             return "Disconnected"
+        }
+    }
+
+    @ViewBuilder
+    private func bottomView() -> some View {
+        VStack(spacing: 32) {
+            Text("Привет я Маша,\n давай начнем играть")
+                .typography(.M1.bold)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+
+            Button {
+                viewModel.beginConversation()
+            } label: {
+                Image(.startButton)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 202, height: 105)
+            }
+            .buttonStyle(.plain)
+            .animateAppear(.optionButton(delay: 0.4))
+        }
+        .frame(maxWidth: .infinity, alignment: .bottom)
+        .frame(height: 280)
+        .background {
+            Image(.voiceBottom)
+                .resizable()
+                .scaledToFill()
+                .frame(height: 300)
+                .offset(y: 15)
+        }
+        .animateAppear(.optionButton(delay: 0.4))
+    }
+
+    @ViewBuilder
+    private func alertView() -> some View {
+        if case .error = viewModel.viewState {
+            VStack {
+                Image(.alert)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 280, height: 93)
+            }
+            .animateAppear(.alertAppear(delay: 0.1))
         }
     }
 }
@@ -171,4 +205,8 @@ struct CallButton: View {
         .disabled(isButtonDisabled)
         .padding(.bottom, 50)
     }
+}
+
+#Preview {
+    VoiceChatView(viewModel: .init())
 }

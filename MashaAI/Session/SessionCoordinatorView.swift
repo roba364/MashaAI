@@ -14,19 +14,23 @@ struct SessionCoordinatorView: View {
     }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            VoiceChatCoordinatorView(coordinator: coordinator.buildVoiceChatCoordinator())
-                .tabItem {
-                    Label("Voice", systemImage: "mic.fill")
-                }
-                .tag(Tab.voice)
+//        TabView(selection: $selectedTab) {
 
-            ProfileCoordinatorView(coordinator: coordinator.buildProfileCoordinator())
-                .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle")
-                }
-                .tag(Tab.profile)
+//                .tabItem {
+//                    Label("Voice", systemImage: "mic.fill")
+//                }
+//                .tag(Tab.voice)
+
+//            ProfileCoordinatorView(coordinator: coordinator.buildProfileCoordinator())
+//                .tabItem {
+//                    Label("Profile", systemImage: "person.crop.circle")
+//                }
+//                .tag(Tab.profile)
+//        }
+        VStack {
+            VoiceChatCoordinatorView(coordinator: coordinator.buildVoiceChatCoordinator())
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             Task {
                 await coordinator.onAppear()

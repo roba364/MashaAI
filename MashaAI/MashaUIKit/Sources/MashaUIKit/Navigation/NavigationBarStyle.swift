@@ -14,7 +14,7 @@ public struct NavigationBarStyle: Equatable {
     let appearence: AppearenceStyle
 
     public init(
-        typography: UIFont.Typography = .H4.regular,
+        typography: UIFont.Typography = .M1.bold,
         appearence: AppearenceStyle = .light
     ) {
         self.typography = typography
@@ -24,7 +24,7 @@ public struct NavigationBarStyle: Equatable {
 
 private struct NavigationBarStyleKey: EnvironmentKey {
     public static var defaultValue: NavigationBarStyle = .init(
-        typography: .H4.regular,
+        typography: .M1.bold,
         appearence: .light
     )
 }

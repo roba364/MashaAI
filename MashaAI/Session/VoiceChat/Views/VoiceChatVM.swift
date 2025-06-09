@@ -2,15 +2,13 @@ import Foundation
 import Combine
 import ElevenLabsSDK
 
-// MARK: - Types and Preview
-struct Agent {
-    let id: String
-    let name: String
-    let description: String
-}
-
-
 final class VoiceChatVM: ObservableObject {
+
+    enum ViewState {
+        case loading
+        case connected
+        case error
+    }
 
     @Published
     private(set) var status: ElevenLabsSDK.Status = .disconnected
@@ -19,24 +17,19 @@ final class VoiceChatVM: ObservableObject {
     var isConnecting = false
 
     @Published
-    private(set) var lastError: String?
+    var lastError: String?
 
     @Published
     private(set) var mode: ElevenLabsSDK.Mode = .listening
-
-    let agents = [
-        Agent(
-            id: "w63wjugjg9aztG1H9JDa",
-            name: "Masha",
-            description: "AI Assistant"
-        )
-    ]
 
     @Published
     private(set) var connectionRetryCount = 0
 
     @Published
     private(set) var audioLevel: Float = 0.0
+
+    @Published
+    private(set) var viewState: ViewState = .loading
 
     private let config = ElevenLabsSDK.SessionConfig(agentId: "w63wjugjg9aztG1H9JDa")
     private var currentAgentIndex = 0
@@ -61,6 +54,7 @@ final class VoiceChatVM: ObservableObject {
             callbacks.onConnect = { [weak self] conversationId in
                 DispatchQueue.main.async {
                     guard let self else { return }
+                    self.viewState = .connected
                     print("✅ Connected successfully with ID: \(conversationId)")
                     self.status = .connected
                     self.isConnecting = false
@@ -92,6 +86,8 @@ final class VoiceChatVM: ObservableObject {
                 DispatchQueue.main.async {
                     guard let self else { return }
                     print("❌ Error (\(errorCode ?? -1)): \(errorMessage)")
+
+                    self.viewState = .error
 
                     // Игнорируем ошибки, связанные с коррекцией ответов агента (при перебивании)
                     if self.isAgentCorrectionError(errorMessage) {
@@ -185,7 +181,8 @@ final class VoiceChatVM: ObservableObject {
         mode = .listening
     }
 
-    func beginConversation(agent: Agent) {
+    func beginConversation() {
+        let agent = Agent.masha
         // Предотвращаем множественные подключения
         guard !isConnecting else {
             print("⚠️ Connection already in progress, skipping...")
@@ -249,4 +246,19 @@ final class VoiceChatVM: ObservableObject {
         // Затем проверяем повторяемые
         return retryableErrors.contains { errorLower.contains($0) }
     }
+}
+
+// MARK: - Types and Preview
+struct Agent {
+    let id: String
+    let name: String
+    let description: String
+}
+
+extension Agent {
+    static let masha: Self = .init(
+        id: "w63wjugjg9aztG1H9JDa",
+        name: "Masha",
+        description: "AI Assistant"
+    )
 }
