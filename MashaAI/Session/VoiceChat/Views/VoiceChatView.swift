@@ -2,18 +2,18 @@ import ElevenLabsSDK
 import SwiftUI
 
 struct VoiceChatView: View {
-
+    
     @ObservedObject
     var viewModel: VoiceChatVM
-
+    
     @Environment(\.playHaptic)
     private var playHaptic
-
+    
     @State
     private var pulseScale: CGFloat = 1.0
     @State
     private var pulseOpacity: Double = 0.8
-
+    
     var body: some View {
         VStack {
             content(for: viewModel.viewState)
@@ -29,23 +29,25 @@ struct VoiceChatView: View {
         .overlay(alignment: .top, content: alertView)
         .onReceive(viewModel.$lastError) { error in
             guard error != nil else { return }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                viewModel.viewState = .loading
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak viewModel] in
+                viewModel?.viewState = .loading
             }
         }
         .onReceive(viewModel.$isAISpeaking) { isSpeaking in
-
+            
         }
         .task {
             await viewModel.onAppear()
         }
         .onDisappear {
             print("🏃‍♂️ View disappearing, cleaning up...")
+            // Останавливаем анимации для предотвращения утечек памяти
+            stopAllAnimations()
             viewModel.stopConversation()
         }
     }
-
+    
     @ViewBuilder
     private func content(for viewState: VoiceChatVM.ViewState) -> some View {
         switch viewState {
@@ -54,10 +56,10 @@ struct VoiceChatView: View {
                 Text("Загрузка")
                     .typography(.M1.superBold)
                     .foregroundColor(.white)
-
+                
                 LoadingDotsView()
             }
-
+            
         case .error, .connected, .loading:
             ZStack {
                 LinearGradient(
@@ -82,7 +84,7 @@ struct VoiceChatView: View {
                     updatePulseAnimation(isAISpeaking: newValue)
                 }
                 .animateAppear(.optionButton(delay: 0.8))
-
+                
                 Image(.masha)
                     .resizable()
                     .scaledToFill()
@@ -92,11 +94,11 @@ struct VoiceChatView: View {
             .padding(.bottom, 180)
         }
     }
-
+    
     private func startPulsing() {
         updatePulseAnimation(isAISpeaking: viewModel.isAISpeaking)
     }
-
+    
     private func updatePulseAnimation(isAISpeaking: Bool) {
         if isAISpeaking {
             // Быстрая пульсация при речи AI
@@ -112,7 +114,7 @@ struct VoiceChatView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private func bottomView() -> some View {
         switch viewModel.viewState {
@@ -122,7 +124,7 @@ struct VoiceChatView: View {
             VStack(spacing: 24) {
                 indicatorView()
                     .padding(.top, 30)
-
+                
                 Button {
                     handleButtonAction()
                 } label: {
@@ -143,7 +145,7 @@ struct VoiceChatView: View {
             .animateAppear(.optionButton(delay: 0.4))
         }
     }
-
+    
     @ViewBuilder
     private func indicatorView() -> some View {
         ZStack {
@@ -154,7 +156,7 @@ struct VoiceChatView: View {
                 .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
                 .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
-
+            
             VStack(spacing: 12) {
                 OrbView(
                     mode: viewModel.mode,
@@ -183,7 +185,7 @@ struct VoiceChatView: View {
             )
         }
     }
-
+    
     private var statusText: String {
         if viewModel.isAISpeaking {
             return "🗣️ Маша говорит..."
@@ -196,7 +198,7 @@ struct VoiceChatView: View {
             }
         }
     }
-
+    
     private var statusColor: Color {
         if viewModel.isAISpeaking {
             return .green
@@ -209,7 +211,7 @@ struct VoiceChatView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private func alertView() -> some View {
         if case .error = viewModel.viewState {
@@ -222,10 +224,10 @@ struct VoiceChatView: View {
             .animateAppear(.alertAppear(delay: 0.1))
         }
     }
-
+    
     private func handleButtonAction() {
         playHaptic(.light)
-
+        
         switch viewModel.viewState {
         case .loading, .error:
             viewModel.beginConversation()
@@ -235,7 +237,7 @@ struct VoiceChatView: View {
             break
         }
     }
-
+    
     @ViewBuilder
     private func actionButton() -> some View {
         ZStack {
@@ -247,7 +249,7 @@ struct VoiceChatView: View {
                 .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
                 .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
-
+            
             // Stop Button
             Image(.stopButton)
                 .resizable()
@@ -260,13 +262,23 @@ struct VoiceChatView: View {
                     value: viewModel.viewState)
         }
     }
+    
+    private func stopAllAnimations() {
+        withAnimation(.linear(duration: 0)) {
+            pulseScale = 1.0
+            pulseOpacity = 0.8
+        }
+    }
 }
 
 // MARK: - LoadingDotsView
 struct LoadingDotsView: View {
     @State
     private var animationState: Int = 0
-
+    
+    @State
+    private var timer: Timer?
+    
     var body: some View {
         HStack(spacing: -5) {
             ForEach(0..<3) { index in
@@ -282,14 +294,25 @@ struct LoadingDotsView: View {
         .onAppear {
             startWaveAnimation()
         }
+        .onDisappear {
+            stopWaveAnimation()
+        }
     }
-
+    
     private func startWaveAnimation() {
-        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+        // Останавливаем предыдущий timer если он есть
+        stopWaveAnimation()
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
             withAnimation(.easeInOut(duration: 0.4)) {
                 animationState = (animationState + 1) % 3
             }
         }
+    }
+    
+    private func stopWaveAnimation() {
+        timer?.invalidate()
+        timer = nil
     }
 }
 
