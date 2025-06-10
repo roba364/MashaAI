@@ -1,9 +1,5 @@
 import SwiftUI
 
-public extension LinearGradient {
-    
-}
-
 public extension Array where Element == Gradient.Stop {
     static let voiceChatBackground: Self = [
         .init(color: .palette.yellowNotActive, location: 0.0),

@@ -4,19 +4,9 @@ import SwiftUI
 struct OrbView: View {
     let mode: ElevenLabsSDK.Mode
     let audioLevel: Float
-    let isAISpeaking: Bool
 
     @State
     private var waveAnimationPhase: Double = 0
-
-    private var iconName: String {
-        switch mode {
-        case .listening:
-            return "waveform"
-        case .speaking:
-            return "speaker.wave.2.fill"
-        }
-    }
 
     private var scale: CGFloat {
         let baseScale: CGFloat = 1.0

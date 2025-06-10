@@ -48,14 +48,15 @@ extension UIFont {
     static func amaticSC(size: CGFloat, weight: UIFont.Weight = .light) -> UIFont {
         let name: String = {
             switch weight {
-            case .bold: return "AmaticSC-Bold"
-            case .regular: return "AmaticSC-Regular"
-            case .light: return "AmaticSC-Regular"
-            default: return "AmaticSC-Regular"
+            case .bold:   return "AmaticSC-Bold"
+            case .regular:return "AmaticSC-Regular"
+            case .light:  return "AmaticSC-Regular"
+            default:      return "AmaticSC-Regular"
             }
         }()
-
-        return .init(name: name, size: size) ?? .amaticSC(size: size)
+        // Fallback to the system font if the custom font cannot be loaded
+        return .init(name: name, size: size)
+        ?? .systemFont(ofSize: size, weight: weight)
     }
 
     static func proDisplay(size: CGFloat, weight: UIFont.Weight = .light) -> UIFont {
