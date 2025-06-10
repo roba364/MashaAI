@@ -158,8 +158,7 @@ struct VoiceChatView: View {
                 .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
 
             VStack(spacing: 12) {
-                OrbView(
-                    mode: viewModel.mode,
+                SpotifyView(
                     audioLevel: viewModel.audioLevel
                 )
                 .frame(width: 90, height: 90)

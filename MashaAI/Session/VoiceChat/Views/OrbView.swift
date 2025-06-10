@@ -1,8 +1,7 @@
 import ElevenLabsSDK
 import SwiftUI
 
-struct OrbView: View {
-    let mode: ElevenLabsSDK.Mode
+struct SpotifyView: View {
     let audioLevel: Float
 
     @State
