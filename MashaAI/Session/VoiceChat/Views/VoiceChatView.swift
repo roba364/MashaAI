@@ -1,63 +1,6 @@
 import ElevenLabsSDK
 import SwiftUI
 
-struct RoundedLineShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-
-        // Создаем полностью закругленную линию (капсулу) используя BezierPath
-        let cornerRadius = min(rect.width, rect.height) / 2
-        path.addRoundedRect(in: rect, cornerSize: CGSize(width: cornerRadius, height: cornerRadius))
-
-        return path
-    }
-}
-
-struct SpotifyWaveBar: View {
-    let delay: Double
-    let audioLevel: Float
-    let index: Int
-
-    // Высчитываем масштаб opacity на основе audioLevel (как в OrbView)
-    private var audioOpacityScale: Double {
-        let baseScale: Double = 0.2
-        let maxScale: Double = 1.0
-        let scaleFactor = min(Double(audioLevel) * 10.0, maxScale - baseScale)  // Увеличил множитель до 1.0
-        return baseScale + scaleFactor
-    }
-
-    var body: some View {
-        TimelineView(.animation) { timeline in
-            let time = timeline.date.timeIntervalSinceReferenceDate
-            let phase = time * 2 + delay  // Скорость анимации * 2
-            let waveValue = sin(phase)
-            let normalizedWave = (waveValue + 1) / 2  // от 0 до 1
-
-            // Комбинируем базовую анимацию волны с реакцией на audioLevel
-            let baseOpacity = 0.2
-            let animatedOpacity = baseOpacity + (audioOpacityScale - baseOpacity) * normalizedWave
-
-            RoundedLineShape()
-                .fill(Color.white.opacity(animatedOpacity))
-                .frame(width: size(for: index).width, height: size(for: index).height)
-                .animation(.easeInOut(duration: 0.1), value: audioLevel)  // Плавная реакция на изменение audioLevel
-        }
-    }
-
-    private func size(for index: Int) -> (width: CGFloat, height: CGFloat) {
-        switch index {
-        case 0:
-            return (width: 80, height: 16)
-        case 1:
-            return (width: 58, height: 12)
-        case 2:
-            return (width: 40, height: 8)
-        default:
-            return (width: 24, height: 6)
-        }
-    }
-}
-
 // Обновленная основная View
 struct VoiceChatView: View {
 
@@ -66,12 +9,28 @@ struct VoiceChatView: View {
 
     var body: some View {
         VStack {
-            Image(.masha)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 300, height: 400)
-                .padding(.bottom, 270)
+            ZStack {
+                LinearGradient(
+                    stops: .voiceChatBackground,
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .mask {
+                    Circle()
+                        .fill(.white)
+                        .blur(radius: 40)
+                        .frame(width: 400)
+                        .offset(y: 50)
+                }
                 .animateAppear(.optionButton(delay: 0.8))
+
+                Image(.masha)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 300, height: 400)
+                    .animateAppear(.optionButton(delay: 0.8))
+            }
+            .padding(.bottom, 180)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .overlay(alignment: .bottom, content: bottomView)
@@ -89,9 +48,24 @@ struct VoiceChatView: View {
                 viewModel.viewState = .loading
             }
         }
+        .onReceive(viewModel.$isAISpeaking) { isSpeaking in
+            
+        }
         .onDisappear {
             print("🏃‍♂️ View disappearing, cleaning up...")
             viewModel.stopConversation()
+        }
+        .onAppear {
+//            // Устанавливаем callbacks для отслеживания речи AI
+//            viewModel.onAIStartedSpeaking = {
+//                print("🎬 UI: AI started speaking!")
+//                // Здесь можно добавить анимации или другие UI эффекты
+//            }
+//
+//            viewModel.onAIStoppedSpeaking = { duration in
+//                print("🎬 UI: AI stopped speaking! Duration: \(duration) seconds")
+//                // Здесь можно добавить анимации завершения речи
+//            }
         }
     }
 
@@ -131,27 +105,57 @@ struct VoiceChatView: View {
                 .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
 
-            if viewModel.viewState == .connected {
-                spotifyWaves()
-                    .scaleEffect(1.0)
-                    .opacity(1.0)
-                    .animation(.easeInOut(duration: 0.3).delay(0.15), value: viewModel.viewState)
+            VStack(spacing: 12) {
+                OrbView(
+                    mode: viewModel.mode,
+                    audioLevel: viewModel.audioLevel,
+                    isAISpeaking: viewModel.isAISpeaking
+                )
+                .frame(width: 90, height: 90)
+                // Дополнительная анимация при речи AI
+                .scaleEffect(viewModel.isAISpeaking ? 1.2 : 1.0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+
+                // Статус AI
+                Text(statusText)
+                    .typography(.M1.regular)
+                    .foregroundStyle(statusColor)
+                    .multilineTextAlignment(.center)
+                    .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+            }
+            .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
+            .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
+            .animation(
+                .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
+                value: viewModel.viewState
+            )
+        }
+    }
+
+    private var statusText: String {
+        if viewModel.isAISpeaking {
+            return "🗣️ Маша говорит..."
+        } else {
+            switch viewModel.mode {
+            case .listening:
+                return "👂 Маша слушает"
+            case .speaking:
+                return "🎤 Говорите"
             }
         }
     }
 
-    @ViewBuilder
-    private func spotifyWaves() -> some View {
-        VStack(spacing: 8) {  // Горизонтальное расположение как в Spotify
-            ForEach(0..<4, id: \.self) { index in
-                SpotifyWaveBar(
-                    delay: Double(index) * 1.0,  // Больше задержки для заметного эффекта
-                    audioLevel: viewModel.audioLevel,
-                    index: index
-                )
+    private var statusColor: Color {
+        if viewModel.isAISpeaking {
+            return .green
+        } else {
+            switch viewModel.mode {
+            case .listening:
+                return .blue
+            case .speaking:
+                return .orange
             }
         }
-        .frame(height: 20)
     }
 
     @ViewBuilder

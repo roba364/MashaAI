@@ -43,7 +43,7 @@ public struct CloseButton: View {
     @ViewBuilder
     private func circle() -> some View {
         ZStack {
-            Color.palette.closeBtn.opacity(0.24)
+//            Color.palette.closeBtn.opacity(0.24)
 
 //            BackdropBlurView(radius: 8)
         }

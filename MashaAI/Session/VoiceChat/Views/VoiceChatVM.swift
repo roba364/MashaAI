@@ -1,6 +1,6 @@
-import Foundation
 import Combine
 import ElevenLabsSDK
+import Foundation
 
 final class VoiceChatVM: ObservableObject {
 
@@ -31,11 +31,15 @@ final class VoiceChatVM: ObservableObject {
     @Published
     var viewState: ViewState = .loading
 
+    // Новые свойства для отслеживания состояния речи AI
+    @Published
+    private(set) var isAISpeaking: Bool = false
+
     private let config = ElevenLabsSDK.SessionConfig(agentId: "w63wjugjg9aztG1H9JDa")
     private var currentAgentIndex = 0
     private var conversation: ElevenLabsSDK.Conversation?
     private var connectionTask: Task<Void, Never>?
-    
+
     private func startConnection(agent: Agent) async {
         do {
             print("🚀 Starting conversation session (attempt \(connectionRetryCount + 10))...")
@@ -79,6 +83,33 @@ final class VoiceChatVM: ObservableObject {
             callbacks.onMessage = { message, role in
                 DispatchQueue.main.async {
                     print("💬 Message (\(role)): \(message)")
+                    print("💬 Message received - current mode: \(self.mode ?? .listening)")
+                }
+            }
+
+//            callbacks.onAudioPlaybackProgress = { eventId in
+//                print("📦 Получен аудио чанк. Event ID: \(eventId)")
+//                // Можно использовать для отображения прогресса загрузки
+//            }
+
+            callbacks.onAudioEventStart = { [weak self] eventId in
+                // Здесь можно:
+                // - Показать индикатор воспроизведения
+                // - Начать анимацию говорящего аватара
+                // - Отключить кнопку записи
+                DispatchQueue.main.async {
+                    // Обновить UI
+                }
+            }
+
+            callbacks.onAudioEventComplete = { [weak self] in
+                print("🎵 Аудио закончило воспроизводиться")
+                // Здесь можно:
+                // - Скрыть индикатор воспроизведения
+                // - Остановить анимацию аватара
+                // - Включить кнопку записи
+                DispatchQueue.main.async {
+                    // Обновить UI
                 }
             }
 
@@ -87,7 +118,7 @@ final class VoiceChatVM: ObservableObject {
                     guard let self else { return }
                     print("❌ Error (\(errorCode ?? -1)): \(errorMessage)")
 
-//                    self.viewState = .error
+                    //                    self.viewState = .error
 
                     // Игнорируем ошибки, связанные с коррекцией ответов агента (при перебивании)
                     if self.isAgentCorrectionError(errorMessage) {
@@ -98,18 +129,19 @@ final class VoiceChatVM: ObservableObject {
                     self.lastError = errorMessage
 
                     // Проверяем, стоит ли повторить попытку
-                    if self.shouldRetryConnection(errorMessage: errorMessage) && self.connectionRetryCount < 2 {
-                        self.connectionRetryCount += 1
-                        print("🔄 Will retry connection (\(self.connectionRetryCount)/2) in 3 seconds...")
+                    if self.shouldRetryConnection(errorMessage: errorMessage) && self.connectionRetryCount < 2
+                    {
+                    self.connectionRetryCount += 1
+                    print("🔄 Will retry connection (\(self.connectionRetryCount)/2) in 3 seconds...")
 
-                        // Увеличиваем интервал между попытками
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                            if !self.isConnecting && self.status != .connected {
-                                self.connectionTask = Task {
-                                    await self.startConnection(agent: agent)
-                                }
+                    // Увеличиваем интервал между попытками
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                        if !self.isConnecting && self.status != .connected {
+                            self.connectionTask = Task {
+                                await self.startConnection(agent: agent)
                             }
                         }
+                    }
                     } else {
                         print("💥 Max retries reached or non-retryable error")
                         self.stopConversation()
@@ -133,14 +165,30 @@ final class VoiceChatVM: ObservableObject {
             callbacks.onModeChange = { [weak self] newMode in
                 DispatchQueue.main.async {
                     guard let self else { return }
-                    print("🎤 Mode changed: \(newMode)")
+
+                    let previousMode = self.mode
+                    print("🎤 Mode changed: \(previousMode) → \(newMode)")
+//                    print("📊 Current isAISpeaking: \(self.isAISpeaking)")
+//                    print(
+//                        "📊 Raw mode values - Previous: \(String(describing: previousMode)), New: \(String(describing: newMode))"
+//                    )
+
                     self.mode = newMode
+
+                    // Отслеживаем переходы состояний для определения начала/конца речи AI
+                    self.handleModeTransition(from: previousMode, to: newMode)
+
+                    // Дополнительная проверка текущего состояния
+                    self.updateAISpeakingStateBasedOnMode(newMode)
+
+                    print("📊 After transition isAISpeaking: \(self.isAISpeaking)")
                 }
             }
 
             callbacks.onVolumeUpdate = { [weak self] newVolume in
                 DispatchQueue.main.async {
                     guard let self else { return }
+
                     self.audioLevel = max(0, min(1, newVolume))
                 }
             }
@@ -179,6 +227,9 @@ final class VoiceChatVM: ObservableObject {
         isConnecting = false
         audioLevel = 0.0
         mode = .listening
+
+        // Сбрасываем состояние речи AI
+        isAISpeaking = false
     }
 
     func beginConversation() {
@@ -202,6 +253,72 @@ final class VoiceChatVM: ObservableObject {
 
         connectionTask = Task {
             await startConnection(agent: agent)
+        }
+    }
+
+    // MARK: - Debug Methods
+
+    func simulateAISpeaking() {
+        print("🧪 Simulating AI speaking transition")
+        let previousMode = mode
+        mode = .speaking
+        handleModeTransition(from: previousMode, to: .speaking)
+        updateAISpeakingStateBasedOnMode(.speaking)
+    }
+
+    func simulateAIListening() {
+        let previousMode = mode
+        mode = .listening
+        handleModeTransition(from: previousMode, to: .listening)
+        updateAISpeakingStateBasedOnMode(.listening)
+    }
+
+    // MARK: - AI Speaking State Tracking
+
+    private func handleModeTransition(
+        from previousMode: ElevenLabsSDK.Mode, to newMode: ElevenLabsSDK.Mode
+    ) {
+//        print("🔄 Processing mode transition: \(previousMode) → \(newMode)")
+
+        switch (previousMode, newMode) {
+        case (.listening, .speaking):
+            isAISpeaking = true
+
+        case (.speaking, .listening):
+            isAISpeaking = false
+
+        case (.listening, .listening):
+            print("🔄 Still listening...")
+
+        case (.speaking, .speaking):
+            print("🔄 Still speaking...")
+
+        default:
+            print("🔄 Other transition: \(previousMode) → \(newMode)")
+
+            // Добавляем обработку для любых других переходов в .speaking
+            if newMode == .speaking && !isAISpeaking {
+                isAISpeaking = true
+            }
+
+            // Добавляем обработку для любых других переходов в .listening
+            if newMode == .listening && isAISpeaking {
+                isAISpeaking = false
+            }
+        }
+    }
+
+    private func updateAISpeakingStateBasedOnMode(_ mode: ElevenLabsSDK.Mode) {
+        switch mode {
+        case .speaking:
+            if !isAISpeaking {
+                isAISpeaking = true
+            }
+
+        case .listening:
+            if isAISpeaking {
+                isAISpeaking = false
+            }
         }
     }
 

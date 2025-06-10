@@ -12,7 +12,7 @@
 		DE04E6EE2DEE0F0F0081EA23 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6ED2DEE0F0F0081EA23 /* Networking */; };
 		DE04E6F02DEE0F120081EA23 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6EF2DEE0F120081EA23 /* Logger */; };
 		DECA0E532DF36184004C8BAB /* MashaUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = DECA0E522DF36184004C8BAB /* MashaUIKit */; };
-		DECA0E612DF3793F004C8BAB /* ElevenLabsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = DECA0E602DF3793F004C8BAB /* ElevenLabsSDK */; };
+		DEFC0BD32DF817B100EB05EC /* ElevenLabsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = DEFC0BD22DF817B100EB05EC /* ElevenLabsSDK */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,7 +64,7 @@
 				DE04E6EE2DEE0F0F0081EA23 /* Networking in Frameworks */,
 				DE04E6F02DEE0F120081EA23 /* Logger in Frameworks */,
 				DE04E6B42DEE00FB0081EA23 /* Swinject in Frameworks */,
-				DECA0E612DF3793F004C8BAB /* ElevenLabsSDK in Frameworks */,
+				DEFC0BD32DF817B100EB05EC /* ElevenLabsSDK in Frameworks */,
 				DECA0E532DF36184004C8BAB /* MashaUIKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -129,7 +129,7 @@
 				DE04E6ED2DEE0F0F0081EA23 /* Networking */,
 				DE04E6EF2DEE0F120081EA23 /* Logger */,
 				DECA0E522DF36184004C8BAB /* MashaUIKit */,
-				DECA0E602DF3793F004C8BAB /* ElevenLabsSDK */,
+				DEFC0BD22DF817B100EB05EC /* ElevenLabsSDK */,
 			);
 			productName = MashaAI;
 			productReference = DE04E66D2DEE003E0081EA23 /* MashaAI.app */;
@@ -185,7 +185,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				DE04E6B22DEE00FB0081EA23 /* XCRemoteSwiftPackageReference "Swinject" */,
-				DECA0E5E2DF3763C004C8BAB /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
+				DEFC0BD12DF817B100EB05EC /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DE04E66E2DEE003E0081EA23 /* Products */;
@@ -503,12 +503,12 @@
 				minimumVersion = 2.9.1;
 			};
 		};
-		DECA0E5E2DF3763C004C8BAB /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */ = {
+		DEFC0BD12DF817B100EB05EC /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/elevenlabs/ElevenLabsSwift";
+			repositoryURL = "https://github.com/roba364/ElevenLabsSwift";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				kind = revision;
+				revision = 313cbdda7cb36e0674fbbef6e29c5b3e83ea2ba1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -535,9 +535,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = MashaUIKit;
 		};
-		DECA0E602DF3793F004C8BAB /* ElevenLabsSDK */ = {
+		DEFC0BD22DF817B100EB05EC /* ElevenLabsSDK */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DECA0E5E2DF3763C004C8BAB /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */;
+			package = DEFC0BD12DF817B100EB05EC /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */;
 			productName = ElevenLabsSDK;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -156,6 +156,12 @@ public extension UIFont.Typography {
             weight: .bold,
             lineHeght: 42
         )
+
+        public static let regular = UIFont.Typography.amaticSC(
+            size: 20,
+            weight: .light,
+            lineHeght: 24
+        )
     }
 }
 

@@ -12,10 +12,9 @@
     {
       "identity" : "elevenlabsswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/elevenlabs/ElevenLabsSwift",
+      "location" : "https://github.com/roba364/ElevenLabsSwift",
       "state" : {
-        "revision" : "15fbdad888c6f2ff9a8d6138c3c50985be961f08",
-        "version" : "1.2.0"
+        "revision" : "313cbdda7cb36e0674fbbef6e29c5b3e83ea2ba1"
       }
     },
     {
