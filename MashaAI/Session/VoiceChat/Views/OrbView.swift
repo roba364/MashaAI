@@ -4,13 +4,11 @@ import SwiftUI
 struct SpotifyView: View {
     let audioLevel: Float
 
-    @State
-    private var waveAnimationPhase: Double = 0
-
     private var scale: CGFloat {
         let baseScale: CGFloat = 1.0
         let maxScale: CGFloat = 1.666
-        let scaleFactor = min(CGFloat(audioLevel) * 0.9, maxScale - baseScale)
+        let clampedLevel = max(0, min(audioLevel, 1))
+        let scaleFactor = min(CGFloat(clampedLevel) * 0.9, maxScale - baseScale)
         return baseScale + scaleFactor
     }
 
