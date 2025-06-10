@@ -1,38 +1,21 @@
 import ElevenLabsSDK
 import SwiftUI
 
-// Обновленная основная View
 struct VoiceChatView: View {
 
     @ObservedObject
     var viewModel: VoiceChatVM
 
+    @State
+    private var pulseScale: CGFloat = 1.0
+    @State
+    private var pulseOpacity: Double = 0.8
+
     var body: some View {
         VStack {
-            ZStack {
-                LinearGradient(
-                    stops: .voiceChatBackground,
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .mask {
-                    Circle()
-                        .fill(.white)
-                        .blur(radius: 40)
-                        .frame(width: 400)
-                        .offset(y: 50)
-                }
-                .animateAppear(.optionButton(delay: 0.8))
-
-                Image(.masha)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 300, height: 400)
-                    .animateAppear(.optionButton(delay: 0.8))
-            }
-            .padding(.bottom, 180)
+            content(for: viewModel.viewState)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .bottom, content: bottomView)
         .background {
             Image(.voiceBackground)
@@ -49,49 +32,112 @@ struct VoiceChatView: View {
             }
         }
         .onReceive(viewModel.$isAISpeaking) { isSpeaking in
-            
+
+        }
+        .task {
+            await viewModel.onAppear()
         }
         .onDisappear {
             print("🏃‍♂️ View disappearing, cleaning up...")
             viewModel.stopConversation()
         }
-        .onAppear {
-//            // Устанавливаем callbacks для отслеживания речи AI
-//            viewModel.onAIStartedSpeaking = {
-//                print("🎬 UI: AI started speaking!")
-//                // Здесь можно добавить анимации или другие UI эффекты
-//            }
-//
-//            viewModel.onAIStoppedSpeaking = { duration in
-//                print("🎬 UI: AI stopped speaking! Duration: \(duration) seconds")
-//                // Здесь можно добавить анимации завершения речи
-//            }
+    }
+
+    @ViewBuilder
+    private func content(for viewState: VoiceChatVM.ViewState) -> some View {
+        switch viewState {
+        case .appearing:
+            HStack(spacing: 4) {
+                Text("Загрузка")
+                    .typography(.M1.superBold)
+                    .foregroundColor(.white)
+
+                LoadingDotsView()
+            }
+
+        case .error, .connected, .loading:
+            ZStack {
+                LinearGradient(
+                    stops: .voiceChatBackground,
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .mask {
+                    Circle()
+                        .fill(.white)
+                        .blur(radius: viewModel.isAISpeaking ? 40 : 60)
+                        .frame(width: 400)
+                        .offset(y: 50)
+                }
+                .scaleEffect(pulseScale)
+                .opacity(pulseOpacity)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+                .onAppear {
+                    startPulsing()
+                }
+                .onChange(of: viewModel.isAISpeaking) { _, newValue in
+                    updatePulseAnimation(isAISpeaking: newValue)
+                }
+                .animateAppear(.optionButton(delay: 0.8))
+
+                Image(.masha)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 300, height: 400)
+                    .animateAppear(.optionButton(delay: 0.8))
+            }
+            .padding(.bottom, 180)
+        }
+    }
+
+    private func startPulsing() {
+        updatePulseAnimation(isAISpeaking: viewModel.isAISpeaking)
+    }
+
+    private func updatePulseAnimation(isAISpeaking: Bool) {
+        if isAISpeaking {
+            // Быстрая пульсация при речи AI
+            withAnimation(.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
+                pulseScale = 1.15
+                pulseOpacity = 1.0
+            }
+        } else {
+            // Медленная пульсация в режиме ожидания
+            withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+                pulseScale = 1.05
+                pulseOpacity = 0.6
+            }
         }
     }
 
     @ViewBuilder
     private func bottomView() -> some View {
-        VStack(spacing: 24) {
-            indicatorView()
+        switch viewModel.viewState {
+        case .appearing:
+            EmptyView()
+        case .error, .connected, .loading:
+            VStack(spacing: 24) {
+                indicatorView()
 
-            Button {
-                handleButtonAction()
-            } label: {
-                actionButton()
+                Button {
+                    handleButtonAction()
+                } label: {
+                    actionButton()
+                }
+                .buttonStyle(.plain)
+                .animateAppear(.optionButton(delay: 0.4))
             }
-            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, alignment: .bottom)
+            .frame(height: 280)
+            .background {
+                Image(.voiceBottom)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 300)
+                    .offset(y: 15)
+            }
             .animateAppear(.optionButton(delay: 0.4))
         }
-        .frame(maxWidth: .infinity, alignment: .bottom)
-        .frame(height: 280)
-        .background {
-            Image(.voiceBottom)
-                .resizable()
-                .scaledToFill()
-                .frame(height: 300)
-                .offset(y: 15)
-        }
-        .animateAppear(.optionButton(delay: 0.4))
     }
 
     @ViewBuilder
@@ -115,13 +161,15 @@ struct VoiceChatView: View {
                 // Дополнительная анимация при речи AI
                 .scaleEffect(viewModel.isAISpeaking ? 1.2 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
-
-                // Статус AI
-                Text(statusText)
-                    .typography(.M1.regular)
-                    .foregroundStyle(statusColor)
-                    .multilineTextAlignment(.center)
-                    .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+                .overlay(alignment: .trailing) {
+                    // Статус AI
+                    Text(statusText)
+                        .typography(.M1.regular)
+                        .foregroundStyle(statusColor)
+                        .multilineTextAlignment(.center)
+                        .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+                        .offset(x: 70)
+                }
             }
             .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
             .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
@@ -177,6 +225,8 @@ struct VoiceChatView: View {
             viewModel.beginConversation()
         case .connected:
             viewModel.stopConversation()
+        default:
+            break
         }
     }
 
@@ -202,6 +252,37 @@ struct VoiceChatView: View {
                 .animation(
                     .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
                     value: viewModel.viewState)
+        }
+    }
+}
+
+// MARK: - LoadingDotsView
+struct LoadingDotsView: View {
+    @State
+    private var animationState: Int = 0
+
+    var body: some View {
+        HStack(spacing: -5) {
+            ForEach(0..<3) { index in
+                Text(".")
+                    .typography(.M1.superBold)
+                    .foregroundColor(.white)
+                    .opacity(animationState == index ? 1.0 : 0.5)
+                    .scaleEffect(animationState == index ? 1.5 : 1.0)
+                    .animation(.easeInOut(duration: 1), value: animationState)
+            }
+        }
+        .offset(y: -5)
+        .onAppear {
+            startWaveAnimation()
+        }
+    }
+
+    private func startWaveAnimation() {
+        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 0.4)) {
+                animationState = (animationState + 1) % 3
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import Foundation
 final class VoiceChatVM: ObservableObject {
 
     enum ViewState {
+        case appearing
         case loading
         case connected
         case error
@@ -29,7 +30,7 @@ final class VoiceChatVM: ObservableObject {
     private(set) var audioLevel: Float = 0.0
 
     @Published
-    var viewState: ViewState = .loading
+    var viewState: ViewState = .appearing
 
     // Новые свойства для отслеживания состояния речи AI
     @Published
@@ -39,6 +40,13 @@ final class VoiceChatVM: ObservableObject {
     private var currentAgentIndex = 0
     private var conversation: ElevenLabsSDK.Conversation?
     private var connectionTask: Task<Void, Never>?
+
+    func onAppear() async {
+        try? await Task.sleep(nanoseconds: 3_000_000_000)  // 1 секунда
+        await MainActor.run {
+            viewState = .loading
+        }
+    }
 
     private func startConnection(agent: Agent) async {
         do {

@@ -151,6 +151,12 @@ public extension Font {
 
 public extension UIFont.Typography {
     struct M1 {
+        public static let superBold = UIFont.Typography.amaticSC(
+            size: 56,
+            weight: .bold,
+            lineHeght: 74
+        )
+
         public static let bold = UIFont.Typography.amaticSC(
             size: 34,
             weight: .bold,
