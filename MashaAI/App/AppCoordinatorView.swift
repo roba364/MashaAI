@@ -1,4 +1,5 @@
 import SwiftUI
+import MashaUIKit
 
 struct AppCoordinatorView: View {
 

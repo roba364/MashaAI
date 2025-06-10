@@ -6,6 +6,9 @@ struct VoiceChatView: View {
     @ObservedObject
     var viewModel: VoiceChatVM
 
+    @Environment(\.playHaptic)
+    private var playHaptic
+
     @State
     private var pulseScale: CGFloat = 1.0
     @State
@@ -118,6 +121,7 @@ struct VoiceChatView: View {
         case .error, .connected, .loading:
             VStack(spacing: 24) {
                 indicatorView()
+                    .padding(.top, 30)
 
                 Button {
                     handleButtonAction()
@@ -134,7 +138,7 @@ struct VoiceChatView: View {
                     .resizable()
                     .scaledToFill()
                     .frame(height: 300)
-                    .offset(y: 15)
+                    .offset(y: 20)
             }
             .animateAppear(.optionButton(delay: 0.4))
         }
@@ -220,6 +224,8 @@ struct VoiceChatView: View {
     }
 
     private func handleButtonAction() {
+        playHaptic(.light)
+
         switch viewModel.viewState {
         case .loading, .error:
             viewModel.beginConversation()
