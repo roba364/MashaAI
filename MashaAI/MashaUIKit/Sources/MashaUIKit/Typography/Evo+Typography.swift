@@ -129,9 +129,9 @@ extension UIFont.Typography {
     static func amaticSC(
         size: CGFloat,
         weight: UIFont.Weight = .light,
-        lineHeght: CGFloat
+        lineHeight: CGFloat
     ) -> Self {
-        .init(font: .amaticSC(size: size,weight: weight), lineHeight: lineHeght)
+        .init(font: .amaticSC(size: size ,weight: weight), lineHeight: lineHeight)
     }
 
     static func proDisplay(
@@ -155,19 +155,19 @@ public extension UIFont.Typography {
         public static let superBold = UIFont.Typography.amaticSC(
             size: 56,
             weight: .bold,
-            lineHeght: 74
+            lineHeight: 74
         )
 
         public static let bold = UIFont.Typography.amaticSC(
             size: 34,
             weight: .bold,
-            lineHeght: 42
+            lineHeight: 42
         )
 
         public static let regular = UIFont.Typography.amaticSC(
             size: 20,
             weight: .light,
-            lineHeght: 24
+            lineHeight: 24
         )
     }
 }
