@@ -26,7 +26,7 @@ public struct NavigationBarTitle<
         VStack(spacing: 4) {
             title
                 .typography(navigationBarStyle.typography)
-                .foregroundColor(.palette.primary800)
+                .foregroundColor(.white)
                 .lineLimit(1)
                 .measure { titleHeight = $0?.height }
             subtitle

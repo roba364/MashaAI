@@ -1,6 +1,5 @@
 import SwiftUI
-
-import SwiftUI
+import MashaUIKit
 
 struct ContentView: View {
 
@@ -9,5 +8,8 @@ struct ContentView: View {
 
     var body: some View {
         AppCoordinatorView(coordinator: coordinator)
+            .environment(\.playHaptic, .init(handler: {
+                HapticController.shared.play($0)
+            }))
     }
 }

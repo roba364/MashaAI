@@ -1,499 +1,355 @@
-import SwiftUI
 import ElevenLabsSDK
+import SwiftUI
 
 struct VoiceChatView: View {
-    @StateObject var viewModel: VoiceChatVM
+
+    @ObservedObject
+    var viewModel: VoiceChatVM
+
+    @Environment(\.playHaptic)
+    private var playHaptic
+
+    @State
+    private var pulseScale: CGFloat = 1.0
+    @State
+    private var pulseOpacity: Double = 0.8
+    @State
+    private var isAnimatingPulse: Bool = false
+    @State
+    private var pulseAnimationTask: Task<Void, Never>?
 
     var body: some View {
         VStack {
-            ConversationalAIExampleView()
+            content(for: viewModel.viewState)
         }
-        //        .task {
-        //            await viewModel.onAppear()
-        //        }
-    }
-}
-
-import SwiftUI
-import _Concurrency
-
-struct OrbView: View {
-    let mode: ElevenLabsSDK.Mode
-    let audioLevel: Float
-
-    private var iconName: String {
-        switch mode {
-        case .listening:
-            return "waveform"
-        case .speaking:
-            return "speaker.wave.2.fill"
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .bottom, content: bottomView)
+        .background {
+            Image(.voiceBackground)
+                .resizable()
+                .scaledToFill()
+                .edgesIgnoringSafeArea(.all)
         }
-    }
+        .overlay(alignment: .top, content: alertView)
+        .onReceive(viewModel.$lastError) { error in
+            guard error != nil else { return }
 
-    private var scale: CGFloat {
-        let baseScale: CGFloat = 1.0
-        let maxScale: CGFloat = 1.3
-        let scaleFactor = min(CGFloat(audioLevel) * 0.5, maxScale - baseScale)
-        return baseScale + scaleFactor
-    }
-
-    var body: some View {
-        ZStack {
-            // Заменяем отсутствующее изображение orb на кастомный orb
-            Circle()
-                .fill(
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            Color.blue.opacity(0.8),
-                            Color.purple.opacity(0.6),
-                            Color.pink.opacity(0.4)
-                        ]),
-                        center: .center,
-                        startRadius: 20,
-                        endRadius: 75
-                    )
-                )
-                .frame(width: 150, height: 150)
-                .blur(radius: 1)
-                .scaleEffect(scale)
-                .animation(.easeInOut(duration: 0.3), value: scale)
-
-            // Внутренний круг
-            Circle()
-                .fill(.white.opacity(0.9))
-                .frame(width: 48, height: 48)
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                .scaleEffect(scale)
-                .animation(.spring(response: 0.15, dampingFraction: 0.7), value: scale)
-
-            // Mode icon
-            Image(systemName: iconName)
-                .font(.system(size: 24, weight: .medium))
-                .foregroundColor(.black)
-                .scaleEffect(scale)
-                .animation(.spring(response: 0.15, dampingFraction: 0.7), value: scale)
-        }
-    }
-}
-
-struct ConversationalAIExampleView: View {
-    @State private var currentAgentIndex = 0
-    @State private var conversation: ElevenLabsSDK.Conversation?
-    @State private var audioLevel: Float = 0.0
-    @State private var mode: ElevenLabsSDK.Mode = .listening
-    @State private var status: ElevenLabsSDK.Status = .disconnected
-    @State private var isConnecting = false
-    @State private var connectionRetryCount = 0
-    @State private var lastError: String?
-    @State private var connectionTask: Task<Void, Never>?
-
-    let agents = [
-        Agent(
-            id: "w63wjugjg9aztG1H9JDa",
-            name: "Masha",
-            description: "AI Assistant"
-        )
-    ]
-
-    private func cleanupConversation() {
-        print("🧹 Cleaning up conversation...")
-
-        // Отменяем активную задачу подключения
-        connectionTask?.cancel()
-        connectionTask = nil
-
-        // Завершаем сессию
-        if let conv = conversation {
-            conv.endSession()
-        }
-        conversation = nil
-
-        // Сбрасываем состояние
-        status = .disconnected
-        isConnecting = false
-        audioLevel = 0.0
-        mode = .listening
-    }
-
-    private func beginConversation(agent: Agent) {
-        // Предотвращаем множественные подключения
-        guard !isConnecting else {
-            print("⚠️ Connection already in progress, skipping...")
-            return
-        }
-
-        if status == .connected {
-            print("🔌 Disconnecting current session...")
-            cleanupConversation()
-            return
-        }
-
-        // Сбрасываем предыдущие ошибки и счетчик
-        lastError = nil
-        connectionRetryCount = 0
-        isConnecting = true
-
-        connectionTask = Task {
-            await performConnection(agent: agent)
-        }
-    }
-
-    private func performConnection(agent: Agent) async {
-        do {
-            print("🚀 Starting conversation session (attempt \(connectionRetryCount + 10))...")
-
-            // Увеличиваем задержку для стабильности
-            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 секунда
-
-            // Проверяем, не была ли отменена задача
-            try Task.checkCancellation()
-
-            // Упрощенная конфигурация без переопределений
-            let config = ElevenLabsSDK.SessionConfig(agentId: agent.id)
-
-            var callbacks = ElevenLabsSDK.Callbacks()
-
-            callbacks.onConnect = { conversationId in
-                DispatchQueue.main.async {
-                    print("✅ Connected successfully with ID: \(conversationId)")
-                    status = .connected
-                    isConnecting = false
-                    connectionRetryCount = 0
-                    lastError = nil
-                }
-            }
-
-            callbacks.onDisconnect = {
-                DispatchQueue.main.async {
-                    print("🔌 Disconnected")
-                    if status == .connected {
-                        // Неожиданное отключение
-                        lastError = "Connection lost unexpectedly"
-                    }
-                    cleanupConversation()
-                }
-            }
-
-            callbacks.onMessage = { message, role in
-                DispatchQueue.main.async {
-                    print("💬 Message (\(role)): \(message)")
-                }
-            }
-
-            callbacks.onError = { errorMessage, errorCode in
-                DispatchQueue.main.async {
-                    print("❌ Error (\(errorCode ?? -1)): \(errorMessage)")
-
-                    // Игнорируем ошибки, связанные с коррекцией ответов агента (при перебивании)
-                    if isAgentCorrectionError(errorMessage) {
-                        print("ℹ️ Agent response correction detected - this is normal when interrupting")
-                        return
-                    }
-
-                    lastError = errorMessage
-
-                    // Проверяем, стоит ли повторить попытку
-                    if shouldRetryConnection(errorMessage: errorMessage) && connectionRetryCount < 2 {
-                        connectionRetryCount += 1
-                        print("🔄 Will retry connection (\(connectionRetryCount)/2) in 3 seconds...")
-
-                        // Увеличиваем интервал между попытками
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                            if !isConnecting && status != .connected {
-                                connectionTask = Task {
-                                    await performConnection(agent: agent)
-                                }
-                            }
-                        }
-                    } else {
-                        print("💥 Max retries reached or non-retryable error")
-                        cleanupConversation()
-                    }
-                }
-            }
-
-            callbacks.onStatusChange = { newStatus in
-                DispatchQueue.main.async {
-                    print("📊 Status changed: \(newStatus)")
-                    status = newStatus
-
-                    if newStatus == .disconnected {
-                        isConnecting = false
-                    }
-                }
-            }
-
-            callbacks.onModeChange = { newMode in
-                DispatchQueue.main.async {
-                    print("🎤 Mode changed: \(newMode)")
-                    mode = newMode
-                }
-            }
-
-            callbacks.onVolumeUpdate = { newVolume in
-                DispatchQueue.main.async {
-                    audioLevel = max(0, min(1, newVolume))
-                }
-            }
-
-            // Пытаемся установить соединение
-            conversation = try await ElevenLabsSDK.Conversation.startSession(
-                config: config,
-                callbacks: callbacks
-            )
-
-        } catch {
-            DispatchQueue.main.async {
-                print("💥 Failed to start conversation: \(error.localizedDescription)")
-                lastError = error.localizedDescription
-                cleanupConversation()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak viewModel] in
+                viewModel?.viewState = .loading
             }
         }
-    }
+        .onReceive(viewModel.$isAISpeaking) { isSpeaking in
 
-
-    private func isAgentCorrectionError(_ errorMessage: String) -> Bool {
-        let correctionIndicators = [
-            "agent_response_correction",
-            "Unknown message type",
-            "corrected_agent_response",
-            "original_agent_response"
-        ]
-
-        let errorLower = errorMessage.lowercased()
-        return correctionIndicators.contains { errorLower.contains($0.lowercased()) }
-    }
-
-    private func shouldRetryConnection(errorMessage: String) -> Bool {
-        let retryableErrors = [
-            "Socket is not connected",
-            "WebSocket error",
-            "Connection failed",
-            "Network error",
-            "timeout"
-        ]
-
-        // Не повторяем при ошибках аутентификации, неверных конфигурациях или коррекциях агента
-        let nonRetryableErrors = [
-            "unauthorized",
-            "forbidden",
-            "invalid agent",
-            "rate limit",
-            "agent_response_correction",
-            "Unknown message type"
-        ]
-
-        let errorLower = errorMessage.lowercased()
-
-        // Сначала проверяем не-повторяемые ошибки
-        if nonRetryableErrors.contains(where: { errorLower.contains($0) }) {
-            return false
         }
-
-        // Затем проверяем повторяемые
-        return retryableErrors.contains { errorLower.contains($0) }
-    }
-
-    var body: some View {
-        ZStack {
-            GeometryReader { geometry in
-                VStack(spacing: 30) {
-                    Spacer()
-
-                    OrbView(mode: mode, audioLevel: audioLevel)
-
-                    VStack(spacing: 12) {
-                        Text(agents[currentAgentIndex].name)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.black)
-
-                        Text(agents[currentAgentIndex].description)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-
-                        // Статус соединения
-                        HStack(spacing: 8) {
-                            Circle()
-                                .fill(statusColor)
-                                .frame(width: 10, height: 10)
-                            Text(statusText)
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                        }
-
-                        // Показываем ошибки
-                        if let error = lastError {
-                            Text(error)
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 20)
-                                .lineLimit(2)
-                        }
-                    }
-
-                    if agents.count > 1 {
-                        HStack(spacing: 8) {
-                            ForEach(0..<agents.count, id: \.self) { index in
-                                Circle()
-                                    .fill(index == currentAgentIndex ? Color.black : Color.gray.opacity(0.3))
-                                    .frame(width: 8, height: 8)
-                            }
-                        }
-                    }
-
-                    Spacer()
-
-                    CallButton(
-                        connectionStatus: status,
-                        isConnecting: isConnecting,
-                        action: { beginConversation(agent: agents[currentAgentIndex]) }
-                    )
-                }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-            }
-
-            // Заменяем отсутствующий logo на текст или системную иконку
-            VStack {
-                HStack {
-                    Image(systemName: "brain.head.profile")
-                        .font(.title2)
-                        .foregroundColor(.black)
-                    Text("MashaAI")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.black)
-                }
-                .padding(.top, 16)
-
-                Spacer()
-            }
+        .task {
+            await viewModel.onAppear()
         }
-        .gesture(
-            DragGesture()
-                .onEnded { value in
-                    guard status != .connected && !isConnecting && agents.count > 1 else { return }
-
-                    if value.translation.width < -50 && currentAgentIndex < agents.count - 1 {
-                        currentAgentIndex += 1
-                    } else if value.translation.width > 50 && currentAgentIndex > 0 {
-                        currentAgentIndex -= 1
-                    }
-                }
-        )
         .onDisappear {
             print("🏃‍♂️ View disappearing, cleaning up...")
-            cleanupConversation()
+            // Останавливаем анимации для предотвращения утечек памяти
+            stopAllAnimations()
+            viewModel.stopConversation()
         }
     }
 
-    private var statusColor: Color {
-        switch status {
-        case .connected:
-            return .green
-        case .connecting:
-            return .orange
-        case .disconnecting:
-            return .orange
-        default:
-            return isConnecting ? .orange : .gray
+    @ViewBuilder
+    private func content(for viewState: VoiceChatVM.ViewState) -> some View {
+        switch viewState {
+        case .appearing:
+            HStack(spacing: 4) {
+                Text("Загрузка")
+                    .typography(.M1.superBold)
+                    .foregroundColor(.white)
+
+                LoadingDotsView()
+            }
+
+        case .error, .connected, .loading:
+            ZStack {
+                LinearGradient(
+                    stops: .voiceChatBackground,
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .mask {
+                    Circle()
+                        .fill(.white)
+                        .blur(radius: viewModel.isAISpeaking ? 40 : 60)
+                        .frame(width: 400)
+                        .offset(y: 50)
+                }
+                .scaleEffect(pulseScale)
+                .opacity(pulseOpacity)
+                .animation(
+                    pulseAnimation,
+                    value: isAnimatingPulse
+                )
+                .onAppear {
+                    startPulsing()
+                }
+                .onChange(of: viewModel.isAISpeaking) { _, newValue in
+                    updatePulseAnimation(isAISpeaking: newValue)
+                }
+                .animateAppear(.optionButton(delay: 0.8))
+
+                Image(.masha)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 300, height: 400)
+                    .animateAppear(.optionButton(delay: 0.8))
+            }
+            .padding(.bottom, 180)
+        }
+    }
+
+    private var pulseAnimation: Animation {
+        if viewModel.isAISpeaking {
+            return .easeInOut(duration: 0.5)
+        } else {
+            return .easeInOut(duration: 1.2)
+        }
+    }
+
+    private func startPulsing() {
+        updatePulseAnimation(isAISpeaking: viewModel.isAISpeaking)
+    }
+
+    private func updatePulseAnimation(isAISpeaking: Bool) {
+        // Остановка предыдущей анимации
+        pulseAnimationTask?.cancel()
+
+        // Запуск новой анимационной задачи
+        pulseAnimationTask = Task { @MainActor in
+            while !Task.isCancelled {
+                // Установка целевых значений в зависимости от состояния
+                let targetScale: CGFloat = isAISpeaking ? 1.15 : 1.05
+                let targetOpacity: Double = isAISpeaking ? 1.0 : 0.6
+                let duration: Double = isAISpeaking ? 0.5 : 1.2
+
+                // Анимация к максимальным значениям
+                pulseScale = targetScale
+                pulseOpacity = targetOpacity
+                isAnimatingPulse.toggle()
+
+                try? await Task.sleep(for: .seconds(duration))
+
+                if Task.isCancelled { break }
+
+                // Анимация к минимальным значениям
+                pulseScale = 1.0
+                pulseOpacity = isAISpeaking ? 0.8 : 0.4
+                isAnimatingPulse.toggle()
+
+                try? await Task.sleep(for: .seconds(duration))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func bottomView() -> some View {
+        switch viewModel.viewState {
+        case .appearing:
+            EmptyView()
+        case .error, .connected, .loading:
+            VStack(spacing: 24) {
+                indicatorView()
+                    .padding(.top, 30)
+
+                Button {
+                    handleButtonAction()
+                } label: {
+                    actionButton()
+                }
+                .buttonStyle(.plain)
+                .animateAppear(.optionButton(delay: 0.4))
+            }
+            .frame(maxWidth: .infinity, alignment: .bottom)
+            .frame(height: 280)
+            .background {
+                Image(.voiceBottom)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 300)
+                    .offset(y: 20)
+            }
+            .animateAppear(.optionButton(delay: 0.4))
+        }
+    }
+
+    @ViewBuilder
+    private func indicatorView() -> some View {
+        ZStack {
+            Text("Привет я Маша,\n давай начнем играть")
+                .typography(.M1.bold)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
+                .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
+
+            VStack(spacing: 12) {
+                SpotifyView(
+                    audioLevel: viewModel.audioLevel
+                )
+                .frame(width: 90, height: 90)
+                // Дополнительная анимация при речи AI
+                .scaleEffect(viewModel.isAISpeaking ? 1.2 : 1.0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+//                .overlay(alignment: .trailing) {
+//                    // Статус AI
+//                    Text(statusText)
+//                        .typography(.M1.regular)
+//                        .foregroundStyle(statusColor)
+//                        .multilineTextAlignment(.center)
+//                        .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+//                        .offset(x: 70)
+//                }
+            }
+            .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
+            .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
+            .animation(
+                .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
+                value: viewModel.viewState
+            )
         }
     }
 
     private var statusText: String {
-        if isConnecting {
-            return connectionRetryCount > 0 ? "Retrying... (\(connectionRetryCount)/2)" : "Connecting..."
-        }
-        switch status {
-        case .connected:
-            return "Connected"
-        case .connecting:
-            return "Connecting"
-        case .disconnecting:
-            return "Disconnecting"
-        default:
-            return "Disconnected"
-        }
-    }
-}
-
-// MARK: - Call Button Component
-struct CallButton: View {
-    let connectionStatus: ElevenLabsSDK.Status
-    let isConnecting: Bool
-    let action: () -> Void
-
-    private var buttonIcon: String {
-        if isConnecting {
-            return "phone.arrow.up.right.fill"
-        }
-
-        switch connectionStatus {
-        case .connected:
-            return "phone.down.fill"
-        case .connecting:
-            return "phone.arrow.up.right.fill"
-        case .disconnecting:
-            return "phone.arrow.down.left.fill"
-        default:
-            return "phone.fill"
-        }
-    }
-
-    private var buttonColor: Color {
-        if isConnecting {
-            return .orange
-        }
-
-        switch connectionStatus {
-        case .connected:
-            return .red
-        case .connecting, .disconnecting:
-            return .gray
-        default:
-            return .blue
-        }
-    }
-
-    private var isButtonDisabled: Bool {
-        return connectionStatus == .connecting || connectionStatus == .disconnecting
-    }
-
-    var body: some View {
-        Button(action: action) {
-            ZStack {
-                Circle()
-                    .fill(buttonColor)
-                    .frame(width: 70, height: 70)
-                    .shadow(color: buttonColor.opacity(0.3), radius: isButtonDisabled ? 2 : 8, x: 0, y: 4)
-                    .opacity(isButtonDisabled ? 0.7 : 1.0)
-
-                if isConnecting {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                        .scaleEffect(0.9)
-                } else {
-                    Image(systemName: buttonIcon)
-                        .font(.system(size: 26, weight: .medium))
-                        .foregroundColor(.white)
-                }
+        if viewModel.isAISpeaking {
+            return "🗣️ Маша говорит..."
+        } else {
+            switch viewModel.mode {
+            case .listening:
+                return "👂 Маша слушает"
+            case .speaking:
+                return "🎤 Говорите"
             }
         }
-        .disabled(isButtonDisabled)
-        .padding(.bottom, 50)
+    }
+
+    private var statusColor: Color {
+        if viewModel.isAISpeaking {
+            return .green
+        } else {
+            switch viewModel.mode {
+            case .listening:
+                return .blue
+            case .speaking:
+                return .orange
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func alertView() -> some View {
+        if case .error = viewModel.viewState {
+            VStack {
+                Image(.alert)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 280, height: 93)
+            }
+            .animateAppear(.alertAppear(delay: 0.1))
+        }
+    }
+
+    private func handleButtonAction() {
+        playHaptic(.light)
+
+        switch viewModel.viewState {
+        case .loading, .error:
+            viewModel.beginConversation()
+        case .connected:
+            viewModel.stopConversation()
+        default:
+            break
+        }
+    }
+
+    @ViewBuilder
+    private func actionButton() -> some View {
+        ZStack {
+            // Start Button
+            Image(.startButton)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 202, height: 105)
+                .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
+                .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
+
+            // Stop Button
+            Image(.stopButton)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 202, height: 105)
+                .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
+                .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
+                .animation(
+                    .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
+                    value: viewModel.viewState)
+        }
+    }
+
+    private func stopAllAnimations() {
+        // Отменяем анимационную задачу
+        pulseAnimationTask?.cancel()
+        pulseAnimationTask = nil
+
+        // Сбрасываем значения анимации
+        withAnimation(.linear(duration: 0)) {
+            pulseScale = 1.0
+            pulseOpacity = 0.8
+            isAnimatingPulse = false
+        }
     }
 }
 
-// MARK: - Types and Preview
-struct Agent {
-    let id: String
-    let name: String
-    let description: String
+// MARK: - LoadingDotsView
+struct LoadingDotsView: View {
+    @State
+    private var animationState: Int = 0
+
+    @State
+    private var timer: Timer?
+
+    var body: some View {
+        HStack(spacing: -5) {
+            ForEach(0..<3) { index in
+                Text(".")
+                    .typography(.M1.superBold)
+                    .foregroundColor(.white)
+                    .opacity(animationState == index ? 1.0 : 0.5)
+                    .scaleEffect(animationState == index ? 1.5 : 1.0)
+                    .animation(.easeInOut(duration: 1), value: animationState)
+            }
+        }
+        .offset(y: -5)
+        .onAppear {
+            startWaveAnimation()
+        }
+        .onDisappear {
+            stopWaveAnimation()
+        }
+    }
+
+    private func startWaveAnimation() {
+        // Останавливаем предыдущий timer если он есть
+        stopWaveAnimation()
+
+        timer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 0.4)) {
+                animationState = (animationState + 1) % 3
+            }
+        }
+    }
+
+    private func stopWaveAnimation() {
+        timer?.invalidate()
+        timer = nil
+    }
 }
 
-struct ConvAIExampleView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConversationalAIExampleView()
-    }
+#Preview {
+    VoiceChatView(viewModel: .init())
 }

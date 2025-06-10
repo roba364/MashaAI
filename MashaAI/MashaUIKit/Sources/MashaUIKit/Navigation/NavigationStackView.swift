@@ -101,7 +101,7 @@ private struct ConfigurableNavigationBarModifier: ViewModifier {
                 .environment(
                     \.navigationBarStyle,
                      config.style ?? NavigationBarStyle(
-                        typography: .H4.regular,
+                        typography: .M1.bold,
                         appearence: .light
                      )
                 )
