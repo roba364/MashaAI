@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -31,7 +31,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		DE04E6B82DEE03900081EA23 /* Exceptions for "MashaAI" folder in "MashaAI" target */ = {
+		DE04E6B82DEE03900081EA23 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -45,14 +45,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DE04E66F2DEE003E0081EA23 /* MashaAI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				DE04E6B82DEE03900081EA23 /* Exceptions for "MashaAI" folder in "MashaAI" target */,
-			);
-			path = MashaAI;
-			sourceTree = "<group>";
-		};
+		DE04E66F2DEE003E0081EA23 /* MashaAI */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DE04E6B82DEE03900081EA23 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MashaAI; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +168,7 @@
 				};
 			};
 			buildConfigurationList = DE04E6682DEE003E0081EA23 /* Build configuration list for PBXProject "MashaAI" */;
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -187,7 +181,6 @@
 				DE04E6B22DEE00FB0081EA23 /* XCRemoteSwiftPackageReference "Swinject" */,
 				DE8A01D72DF83A6400168FF8 /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
 			);
-			preferredProjectObjectVersion = 77;
 			productRefGroup = DE04E66E2DEE003E0081EA23 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
