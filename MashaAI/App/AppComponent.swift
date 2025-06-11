@@ -59,6 +59,8 @@ class DIComponent: DIComponentProtocol {
 
         setup(with: container)
     }
+
+    func setup(with container: Container) {}
 }
 
 class BootstrapDIComponent: DIComponentProtocol {
