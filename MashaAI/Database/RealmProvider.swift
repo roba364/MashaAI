@@ -9,7 +9,13 @@ class RealmProvider {
     }
 
     var realm: Realm {
-        try! Realm(configuration: configuration)
+        do {
+            return try Realm(configuration: configuration)
+        } catch {
+            assertionFailure("Realm initialization failed: \(error)")
+            // Fallback to an in-memory Realm to keep the app alive.
+            return try! Realm(configuration: .init(inMemoryIdentifier: "fallback"))
+        }
     }
 }
 

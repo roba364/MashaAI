@@ -15,7 +15,10 @@ class RealmAsyncExecutor {
     func readAsync<T>(_ block: @escaping (Realm) -> T,
                       completion: @escaping (T) -> Void) {
         readWorker.execute { [weak self] in
-            guard let realm = self?.realmProvider.realm else { return }
+            guard let realm = self?.realmProvider.realm else {
+                // Consider how to handle this case - possibly with a default value or error
+                return
+            }
             completion(block(realm))
         }
     }
@@ -23,7 +26,10 @@ class RealmAsyncExecutor {
     func writeAsync<T>(_ block: @escaping (Realm) throws -> T,
                        completion: @escaping (Result<T, Error>) -> Void) {
         writeWorker.execute { [weak self] in
-            guard let realm = self?.realmProvider.realm else { return }
+            guard let realm = self?.realmProvider.realm else {
+                completion(.failure(RealmAsyncExecutorError.executorDeallocated))
+                return
+            }
 
             do {
                 let result = try realm.write { try block(realm) }
@@ -51,4 +57,8 @@ extension RealmAsyncExecutor {
             self.writeAsync(block) { cont.resume(with: $0) }
         }
     }
+}
+
+enum RealmAsyncExecutorError: Error {
+    case executorDeallocated
 }
