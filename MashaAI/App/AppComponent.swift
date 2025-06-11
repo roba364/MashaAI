@@ -17,18 +17,21 @@ class AppComponent: BootstrapDIComponent {
         container.register(MemoryControlling.self) { r in
             MemoryController(repository: r.resolve())
         }
+        .inObjectScope(.container)
 
         container.register(MemoryRepositoring.self) { r in
             MemoryRepository(
                 databaseStorage: r.resolve()
             )
         }
+        .inObjectScope(.container)
 
         container.register(DatabaseStorage.self) { _ in
             RealmStorage(
                 realmProvider: .main
             )
         }
+        .inObjectScope(.container)
     }
 }
 
