@@ -25,7 +25,7 @@ protocol DatabaseTrigger: AnyObject {
 
 typealias DatabaseContext = DatabaseRead & DatabaseWrite
 
-public protocol DatabaseStorage {
+protocol DatabaseStorage {
     func observeChanges<T: DBEntity>(
         _ type: T.Type,
         keyPaths: [PartialKeyPath<T>]?,

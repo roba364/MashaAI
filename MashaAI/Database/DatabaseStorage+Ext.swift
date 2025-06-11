@@ -2,7 +2,7 @@ import Foundation
 import RealmSwift
 import Combine
 
-public extension DatabaseStorage {
+extension DatabaseStorage {
     func get<T: DBEntity, Model>(
         _ type: T.Type = T.self,
         query: DBQuery<T>? = nil,

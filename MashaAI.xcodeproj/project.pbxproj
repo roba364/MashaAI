@@ -11,6 +11,8 @@
 		DE04E6EC2DEE0EE30081EA23 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6EB2DEE0EE30081EA23 /* Utilities */; };
 		DE04E6EE2DEE0F0F0081EA23 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6ED2DEE0F0F0081EA23 /* Networking */; };
 		DE04E6F02DEE0F120081EA23 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = DE04E6EF2DEE0F120081EA23 /* Logger */; };
+		DE5F9CD32DF9997100BB813F /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DE5F9CD22DF9997100BB813F /* RealmSwift */; };
+		DE5F9CD42DF99A6A00BB813F /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = DE5F9CD22DF9997100BB813F /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DE8A01D92DF83A6400168FF8 /* ElevenLabsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = DE8A01D82DF83A6400168FF8 /* ElevenLabsSDK */; };
 		DECA0E532DF36184004C8BAB /* MashaUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = DECA0E522DF36184004C8BAB /* MashaUIKit */; };
 /* End PBXBuildFile section */
@@ -24,6 +26,20 @@
 			remoteInfo = MashaAI;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DE5F9CD52DF99A6A00BB813F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DE5F9CD42DF99A6A00BB813F /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DE04E66D2DEE003E0081EA23 /* MashaAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MashaAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,6 +71,7 @@
 			files = (
 				DE04E6EC2DEE0EE30081EA23 /* Utilities in Frameworks */,
 				DE04E6EE2DEE0F0F0081EA23 /* Networking in Frameworks */,
+				DE5F9CD32DF9997100BB813F /* RealmSwift in Frameworks */,
 				DE04E6F02DEE0F120081EA23 /* Logger in Frameworks */,
 				DE04E6B42DEE00FB0081EA23 /* Swinject in Frameworks */,
 				DE8A01D92DF83A6400168FF8 /* ElevenLabsSDK in Frameworks */,
@@ -107,6 +124,7 @@
 				DE04E6692DEE003E0081EA23 /* Sources */,
 				DE04E66A2DEE003E0081EA23 /* Frameworks */,
 				DE04E66B2DEE003E0081EA23 /* Resources */,
+				DE5F9CD52DF99A6A00BB813F /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -123,6 +141,7 @@
 				DE04E6EF2DEE0F120081EA23 /* Logger */,
 				DECA0E522DF36184004C8BAB /* MashaUIKit */,
 				DE8A01D82DF83A6400168FF8 /* ElevenLabsSDK */,
+				DE5F9CD22DF9997100BB813F /* RealmSwift */,
 			);
 			productName = MashaAI;
 			productReference = DE04E66D2DEE003E0081EA23 /* MashaAI.app */;
@@ -180,6 +199,7 @@
 			packageReferences = (
 				DE04E6B22DEE00FB0081EA23 /* XCRemoteSwiftPackageReference "Swinject" */,
 				DE8A01D72DF83A6400168FF8 /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
+				DE5F9CD12DF9997100BB813F /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = DE04E66E2DEE003E0081EA23 /* Products */;
 			projectDirPath = "";
@@ -372,6 +392,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -404,6 +425,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -496,6 +518,14 @@
 				minimumVersion = 2.9.1;
 			};
 		};
+		DE5F9CD12DF9997100BB813F /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		DE8A01D72DF83A6400168FF8 /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/roba364/ElevenLabsSwift";
@@ -523,6 +553,11 @@
 		DE04E6EF2DEE0F120081EA23 /* Logger */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Logger;
+		};
+		DE5F9CD22DF9997100BB813F /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE5F9CD12DF9997100BB813F /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		DE8A01D82DF83A6400168FF8 /* ElevenLabsSDK */ = {
 			isa = XCSwiftPackageProductDependency;
