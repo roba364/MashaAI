@@ -12,6 +12,24 @@ class AppComponent: BootstrapDIComponent {
     func appCoordinator() -> AppCoordinator {
         AppCoordinator(elementsFactory: self)
     }
+
+    override func setup(with container: Container) {
+        container.register(MemoryControlling.self) { r in
+            MemoryController(repository: r.resolve())
+        }
+
+        container.register(MemoryRepositoring.self) { r in
+            MemoryRepository(
+                databaseStorage: r.resolve()
+            )
+        }
+
+        container.register(DatabaseStorage.self) { _ in
+            RealmStorage(
+                realmProvider: .main
+            )
+        }
+    }
 }
 
 extension AppComponent: AppCoordinatorElementsFactory {
@@ -41,8 +59,6 @@ class DIComponent: DIComponentProtocol {
 
         setup(with: container)
     }
-
-    func setup(with container: Container) {}
 }
 
 class BootstrapDIComponent: DIComponentProtocol {
@@ -52,7 +68,9 @@ class BootstrapDIComponent: DIComponentProtocol {
         setup(with: container)
     }
 
-    func setup(with container: Container) {}
+    func setup(with container: Container) {
+
+    }
 
 }
 

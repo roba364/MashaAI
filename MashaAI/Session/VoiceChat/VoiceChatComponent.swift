@@ -11,6 +11,8 @@ class VoiceChatComponent: DIComponent {
 
 extension VoiceChatComponent: VoiceChatCoordinatorElementsFactory {
     func voiceChatVM() -> VoiceChatVM {
-        VoiceChatVM()
+        VoiceChatVM(
+            memoryController: resolve()
+        )
     }
 }
