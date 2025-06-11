@@ -82,15 +82,6 @@ final class RealmStorage: DatabaseStorage {
     }
   }
 
-  func get<T: DBEntity, V: Comparable>(
-    _ type: T.Type,
-    query: DBQuery<T>?,
-    sort: SortParams<T, V>?,
-    while pred: (T) -> Bool
-  ) -> [T] {
-    let collection = self.collection(T.self, query: query, sort: sort)
-    return collection.prefix(while: pred)
-  }
 }
 
 private class RealmContext: DatabaseContext {
