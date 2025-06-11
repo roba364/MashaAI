@@ -55,7 +55,7 @@ final class VoiceChatVM: ObservableObject {
 
     private func startConnection(agent: Agent) async {
         do {
-            let memories = await memoryController.getContextForAI(maxMessages: 40)
+            let memories = await memoryController.getContextForAI(maxMessages: 100)
 
             // Увеличиваем задержку для стабильности
             try await Task.sleep(nanoseconds: 1_000_000_000)  // 1 секунда
