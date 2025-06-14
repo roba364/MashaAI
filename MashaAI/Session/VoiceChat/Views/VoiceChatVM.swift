@@ -37,9 +37,14 @@ final class VoiceChatVM: ObservableObject {
     private(set) var isAISpeaking: Bool = false
 
     private let config = ElevenLabsSDK.SessionConfig(agentId: "w63wjugjg9aztG1H9JDa")
+    private let memoryController: MemoryControlling
     private var currentAgentIndex = 0
     private var conversation: ElevenLabsSDK.Conversation?
     private var connectionTask: Task<Void, Never>?
+
+    init(memoryController: MemoryControlling) {
+        self.memoryController = memoryController
+    }
 
     func onAppear() async {
         try? await Task.sleep(nanoseconds: 3_000_000_000)  // 1 секунда
@@ -50,7 +55,7 @@ final class VoiceChatVM: ObservableObject {
 
     private func startConnection(agent: Agent) async {
         do {
-            print("🚀 Starting conversation session (attempt \(connectionRetryCount + 10))...")
+            let memories = await memoryController.getContextForAI(maxMessages: 100)
 
             // Увеличиваем задержку для стабильности
             try await Task.sleep(nanoseconds: 1_000_000_000)  // 1 секунда
@@ -59,7 +64,12 @@ final class VoiceChatVM: ObservableObject {
             try Task.checkCancellation()
 
             // Упрощенная конфигурация без переопределений
-            let config = ElevenLabsSDK.SessionConfig(agentId: agent.id)
+            let config = ElevenLabsSDK.SessionConfig(
+                agentId: agent.id,
+                dynamicVariables: [
+                    "recent_topics": .string(memories)
+                ]
+            )
 
             var callbacks = ElevenLabsSDK.Callbacks()
 
@@ -88,36 +98,18 @@ final class VoiceChatVM: ObservableObject {
                 }
             }
 
-            callbacks.onMessage = { message, role in
-                DispatchQueue.main.async {
-                    print("💬 Message (\(role)): \(message)")
-                    print("💬 Message received - current mode: \(self.mode ?? .listening)")
-                }
-            }
-
-//            callbacks.onAudioPlaybackProgress = { eventId in
-//                print("📦 Получен аудио чанк. Event ID: \(eventId)")
-//                // Можно использовать для отображения прогресса загрузки
-//            }
-
-            callbacks.onAudioEventStart = { [weak self] eventId in
-                // Здесь можно:
-                // - Показать индикатор воспроизведения
-                // - Начать анимацию говорящего аватара
-                // - Отключить кнопку записи
-                DispatchQueue.main.async {
-                    // Обновить UI
-                }
-            }
-
-            callbacks.onAudioEventComplete = { [weak self] in
-                print("🎵 Аудио закончило воспроизводиться")
-                // Здесь можно:
-                // - Скрыть индикатор воспроизведения
-                // - Остановить анимацию аватара
-                // - Включить кнопку записи
-                DispatchQueue.main.async {
-                    // Обновить UI
+            callbacks.onMessage = { [weak self] message, role in
+                // Используем Task для async операций внутри синхронного колбэка
+                Task {
+                    do {
+                        let memory = Memory(
+                            message: message,
+                            sender: MemorySender(role: role)
+                        )
+                        try await self?.memoryController.addMemory(memory)
+                    } catch {
+                        print("❌ Error saving memory: \(error)")
+                    }
                 }
             }
 
@@ -176,10 +168,10 @@ final class VoiceChatVM: ObservableObject {
 
                     let previousMode = self.mode
                     print("🎤 Mode changed: \(previousMode) → \(newMode)")
-//                    print("📊 Current isAISpeaking: \(self.isAISpeaking)")
-//                    print(
-//                        "📊 Raw mode values - Previous: \(String(describing: previousMode)), New: \(String(describing: newMode))"
-//                    )
+                    //                    print("📊 Current isAISpeaking: \(self.isAISpeaking)")
+                    //                    print(
+                    //                        "📊 Raw mode values - Previous: \(String(describing: previousMode)), New: \(String(describing: newMode))"
+                    //                    )
 
                     self.mode = newMode
 
@@ -286,7 +278,7 @@ final class VoiceChatVM: ObservableObject {
     private func handleModeTransition(
         from previousMode: ElevenLabsSDK.Mode, to newMode: ElevenLabsSDK.Mode
     ) {
-//        print("🔄 Processing mode transition: \(previousMode) → \(newMode)")
+        //        print("🔄 Processing mode transition: \(previousMode) → \(newMode)")
 
         switch (previousMode, newMode) {
         case (.listening, .speaking):
@@ -386,4 +378,15 @@ extension Agent {
         name: "Masha",
         description: "AI Assistant"
     )
+}
+
+extension MemorySender {
+    fileprivate init(role: ElevenLabsSDK.Role) {
+        switch role {
+        case .user:
+            self = .user
+        case .ai:
+            self = .ai
+        }
+    }
 }

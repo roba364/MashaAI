@@ -1,3 +1,4 @@
+import Combine
 import ElevenLabsSDK
 import SwiftUI
 
@@ -37,9 +38,6 @@ struct VoiceChatView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak viewModel] in
                 viewModel?.viewState = .loading
             }
-        }
-        .onReceive(viewModel.$isAISpeaking) { isSpeaking in
-
         }
         .task {
             await viewModel.onAppear()
@@ -195,15 +193,15 @@ struct VoiceChatView: View {
                 // Дополнительная анимация при речи AI
                 .scaleEffect(viewModel.isAISpeaking ? 1.2 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
-//                .overlay(alignment: .trailing) {
-//                    // Статус AI
-//                    Text(statusText)
-//                        .typography(.M1.regular)
-//                        .foregroundStyle(statusColor)
-//                        .multilineTextAlignment(.center)
-//                        .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
-//                        .offset(x: 70)
-//                }
+                //                .overlay(alignment: .trailing) {
+                //                    // Статус AI
+                //                    Text(statusText)
+                //                        .typography(.M1.regular)
+                //                        .foregroundStyle(statusColor)
+                //                        .multilineTextAlignment(.center)
+                //                        .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
+                //                        .offset(x: 70)
+                //                }
             }
             .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
             .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
@@ -351,5 +349,31 @@ struct LoadingDotsView: View {
 }
 
 #Preview {
-    VoiceChatView(viewModel: .init())
+    final class MemoryController: MemoryControlling {
+        func addMemory(_ memory: Memory) async throws {}
+
+        func getMemories() async -> [Memory] {
+            []
+        }
+
+        func getRecentMemories(limit: Int) async -> [Memory] {
+            []
+        }
+
+        func clearMemories() async throws {}
+
+        func observeMemories() -> AnyPublisher<[Memory], Never> {
+            Just([]).eraseToAnyPublisher()
+        }
+
+        func getContextForAI(maxMessages: Int) async -> String {
+            ""
+        }
+    }
+
+    return VoiceChatView(
+        viewModel: VoiceChatVM(
+            memoryController: MemoryController()
+        )
+    )
 }
