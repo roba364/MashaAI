@@ -62,7 +62,7 @@ struct VoiceChatView: View {
                 LoadingDotsView()
             }
 
-        case .error, .connected, .loading:
+        case .error, .connected, .loading, .connecting:
             ZStack {
                 LinearGradient(
                     stops: .voiceChatBackground,
@@ -148,7 +148,7 @@ struct VoiceChatView: View {
         switch viewModel.viewState {
         case .appearing:
             EmptyView()
-        case .error, .connected, .loading:
+        case .error, .connected, .loading, .connecting:
             VStack(spacing: 24) {
                 indicatorView()
                     .padding(.top, 30)
@@ -159,6 +159,7 @@ struct VoiceChatView: View {
                     actionButton()
                 }
                 .buttonStyle(.plain)
+                .disabled(viewModel.viewState == .connecting)  // Отключаем кнопку в состоянии connecting
                 .animateAppear(.optionButton(delay: 0.4))
             }
             .frame(maxWidth: .infinity, alignment: .bottom)
@@ -177,6 +178,7 @@ struct VoiceChatView: View {
     @ViewBuilder
     private func indicatorView() -> some View {
         ZStack {
+            // Основной текст приветствия
             Text("Привет я Маша,\n давай начнем играть")
                 .typography(.M1.bold)
                 .foregroundStyle(.white)
@@ -185,23 +187,21 @@ struct VoiceChatView: View {
                 .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
 
+            // Текст "Секундочку..." для состояния connecting
+            Text("Секундочку...")
+                .typography(.M1.bold)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .scaleEffect(viewModel.viewState == .connecting ? 1.0 : 0.7)
+                .opacity(viewModel.viewState == .connecting ? 1.0 : 0.0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
+
             VStack(spacing: 12) {
-                SpotifyView(
-                    audioLevel: viewModel.audioLevel
-                )
-                .frame(width: 90, height: 90)
+                SpotifyView(audioLevel: viewModel.audioLevel)
+                    .frame(width: 90, height: 90)
                 // Дополнительная анимация при речи AI
-                .scaleEffect(viewModel.isAISpeaking ? 1.2 : 1.0)
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
-                //                .overlay(alignment: .trailing) {
-                //                    // Статус AI
-                //                    Text(statusText)
-                //                        .typography(.M1.regular)
-                //                        .foregroundStyle(statusColor)
-                //                        .multilineTextAlignment(.center)
-                //                        .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
-                //                        .offset(x: 70)
-                //                }
+                    .scaleEffect(viewModel.isAISpeaking ? 1.2 : 1.0)
+                    .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
             }
             .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
             .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
@@ -259,6 +259,9 @@ struct VoiceChatView: View {
             viewModel.beginConversation()
         case .connected:
             viewModel.stopConversation()
+        case .connecting:
+            // В состоянии connecting кнопка disabled, но если попали сюда - игнорируем
+            break
         default:
             break
         }
@@ -287,6 +290,8 @@ struct VoiceChatView: View {
                     .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
                     value: viewModel.viewState)
         }
+        .opacity(viewModel.viewState == .connecting ? 0.5 : 1.0)  // Визуально показываем disabled состояние
+        .animation(.easeInOut(duration: 0.2), value: viewModel.viewState)
     }
 
     private func stopAllAnimations() {
