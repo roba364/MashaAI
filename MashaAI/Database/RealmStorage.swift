@@ -52,8 +52,13 @@ final class RealmStorage: DatabaseStorage {
             observer.sendError(error)
           }
         }
-      } completion: { (token: NotificationToken?) in
-        lifetime.onCancel { token?.invalidate() }
+      } completion: { result in
+        switch result {
+        case .success(let token):
+          lifetime.onCancel { token?.invalidate() }
+        case .failure(let error):
+          observer.sendError(error)
+        }
       }
     }
   }
