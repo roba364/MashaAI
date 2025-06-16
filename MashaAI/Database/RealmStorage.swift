@@ -35,41 +35,33 @@ final class RealmStorage: DatabaseStorage {
         keyPaths: [PartialKeyPath<T>]?,
         query: DBQuery<T>?
     ) -> AnyPublisher<Void, Error> {
-        AnyPublisher<Void, Error>.create { [weak self] observer, lifetime in
-            guard let self = self else {
-                observer.sendCompletion()
-                return nil
+        let subject = PassthroughSubject<Void, Error>()
+
+        executor.readAsync { realm in
+            var collection = realm.objects(type.self)
+            if let query = query {
+                collection = collection.where(query.query)
             }
 
-            return self.executor.readAsync { realm in
-                guard !lifetime.isCancelled else {
-                    observer.sendCompletion()
-                    return nil
+            let keyPaths = keyPaths?.map(_name(for:))
+            return collection.observe(keyPaths: keyPaths) { changes in
+                switch changes {
+                case .initial, .update:
+                    subject.send(())
+                case let .error(error):
+                    subject.send(completion: .failure(error))
                 }
-
-                var collection = realm.objects(type.self)
-                if let query = query {
-                    collection = collection.where(query.query)
-                }
-
-                let keyPaths = keyPaths?.map(_name(for:))
-                return collection.observe(keyPaths: keyPaths) { changes in
-                    switch changes {
-                    case .initial, .update:
-                        observer.sendNext(())
-                    case let .error(error):
-                        observer.sendError(error)
-                    }
-                }
-            } completion: { result in
-                switch result {
-                case .success(let token):
-                    lifetime.onCancel { token?.invalidate() }
-                case .failure(let error):
-                    observer.sendError(error)
-                }
+            }
+        } completion: { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                subject.send(completion: .failure(error))
             }
         }
+
+        return subject.eraseToAnyPublisher()
     }
 
     func writeTransaction<Model>(
@@ -162,7 +154,7 @@ private class RealmContext: DatabaseContext {
         sort: SortParams<T, V>?
     ) -> Results<T> {
         var collection = realm.objects(T.self)
-        
+
         if let query = query {
             collection = collection.where(query.query)
         }
