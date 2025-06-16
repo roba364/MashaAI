@@ -14,7 +14,13 @@ class RealmProvider {
         } catch {
             assertionFailure("Realm initialization failed: \(error)")
             // Fallback to an in-memory Realm to keep the app alive.
-            return try! Realm(configuration: .init(inMemoryIdentifier: "fallback"))
+            guard
+                let memoryRealm = try? Realm(configuration: .init(inMemoryIdentifier: "fallback"))
+            else {
+                preconditionFailure("Не удалось создать даже in-memory Realm")
+            }
+
+            return memoryRealm
         }
     }
 }
@@ -23,7 +29,9 @@ extension RealmProvider {
     static var main: RealmProvider {
         var configuration = Realm.Configuration.defaultConfiguration
         // TODO: debug only
+#if DEBUG
         configuration.deleteRealmIfMigrationNeeded = true
+#endif
 
         return RealmProvider(configuration: configuration)
     }

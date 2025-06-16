@@ -39,6 +39,7 @@ final class MemoryController: MemoryControlling {
                 await self?.repository.getAll() ?? []
             }
             .replaceError(with: [])
+            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 

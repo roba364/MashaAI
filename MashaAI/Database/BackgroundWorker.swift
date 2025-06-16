@@ -27,8 +27,9 @@ class BackgroundWorker: NSObject {
     }
 
     func start() {
-        let threadName = String(describing: self)
-            .components(separatedBy: .punctuationCharacters)[1]
+        let parts = String(describing: self)
+            .components(separatedBy: .punctuationCharacters)
+        let threadName = parts.last ?? "BackgroundWorker"
 
         thread = Thread { [weak self] in
 

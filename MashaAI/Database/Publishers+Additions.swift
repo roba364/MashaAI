@@ -60,10 +60,16 @@ extension AnyPublisher where Failure == Never {
     func asyncFirst() async -> Output? {
         await withCheckedContinuation { continuation in
             var cancellable: AnyCancellable?
-            cancellable = self.first().sink { value in
-                continuation.resume(returning: value)
-                cancellable?.cancel()
-            }
+            cancellable = self.first().sink(
+                receiveCompletion: { _ in
+                    continuation.resume(returning: nil)
+                    cancellable?.cancel()
+                },
+                receiveValue: { value in
+                    continuation.resume(returning: value)
+                    cancellable?.cancel()
+                }
+            )
         }
     }
 }
