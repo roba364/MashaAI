@@ -21,9 +21,9 @@ final class RealmStorage: DatabaseStorage {
 
     deinit {
         // Clean up all observation tokens
-        tokens.forEach { $0.invalidate() }
-        // Clear the array after invalidating all tokens
-        tokens.removeAll()
+        tokensQueue.async(flags: .barrier) { [tokens] in
+            tokens.forEach { $0.invalidate() }
+        }
     }
 
     private func addToken(_ token: NotificationToken) {
