@@ -32,13 +32,13 @@ struct VoiceChatView: View {
                 .edgesIgnoringSafeArea(.all)
         }
         .overlay(alignment: .top, content: alertView)
-        .onReceive(viewModel.$lastError) { error in
-            guard error != nil else { return }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak viewModel] in
-                viewModel?.viewState = .loading
-            }
-        }
+        //    .onReceive(viewModel.$lastError) { error in
+        //      guard error != nil else { return }
+        //
+        //      DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak viewModel] in
+        //        viewModel?.viewState = .loading
+        //      }
+        //    }
         .task {
             await viewModel.onAppear()
         }
@@ -46,7 +46,8 @@ struct VoiceChatView: View {
             print("🏃‍♂️ View disappearing, cleaning up...")
             // Останавливаем анимации для предотвращения утечек памяти
             stopAllAnimations()
-            viewModel.stopConversation()
+            // Используем новый метод для обработки исчезновения view
+            viewModel.onDisappear()
         }
     }
 
@@ -209,32 +210,6 @@ struct VoiceChatView: View {
                 .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
                 value: viewModel.viewState
             )
-        }
-    }
-
-    private var statusText: String {
-        if viewModel.isAISpeaking {
-            return "🗣️ Маша говорит..."
-        } else {
-            switch viewModel.mode {
-            case .listening:
-                return "👂 Маша слушает"
-            case .speaking:
-                return "🎤 Говорите"
-            }
-        }
-    }
-
-    private var statusColor: Color {
-        if viewModel.isAISpeaking {
-            return .green
-        } else {
-            switch viewModel.mode {
-            case .listening:
-                return .blue
-            case .speaking:
-                return .orange
-            }
         }
     }
 
