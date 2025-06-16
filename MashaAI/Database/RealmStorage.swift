@@ -20,9 +20,10 @@ final class RealmStorage: DatabaseStorage {
     }
 
     deinit {
-        // Clean up all observation tokens
-        tokensQueue.async(flags: .barrier) { [tokens] in
-            tokens.forEach { $0.invalidate() }
+        tokensQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            self.tokens.forEach { $0.invalidate() }
+            self.tokens.removeAll()
         }
     }
 
