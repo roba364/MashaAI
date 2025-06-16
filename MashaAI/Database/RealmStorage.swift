@@ -8,12 +8,34 @@ final class RealmStorage: DatabaseStorage {
 
     private let triggers: [DatabaseTrigger]
 
+    private var tokens: Set<NotificationToken> = []
+    private let tokensQueue = DispatchQueue(label: "realm.storage.tokens", attributes: .concurrent)
+
     init(
         realmProvider: RealmProvider,
         triggers: [DatabaseTrigger] = []
     ) {
         self.executor = .init(realmProvider: realmProvider)
         self.triggers = triggers
+    }
+
+    deinit {
+        // Clean up all observation tokens
+        tokensQueue.sync(flags: .barrier) {
+            tokens.removeAll()
+        }
+    }
+
+    private func addToken(_ token: NotificationToken) {
+        tokensQueue.async(flags: .barrier) { [weak self] in
+            self?.tokens.insert(token)
+        }
+    }
+
+    private func removeToken(_ token: NotificationToken) {
+        tokensQueue.async(flags: .barrier) { [weak self] in
+            self?.tokens.remove(token)
+        }
     }
 
     func observeChanges<T: DBEntity>(
@@ -37,31 +59,53 @@ final class RealmStorage: DatabaseStorage {
     ) -> AnyPublisher<Void, Error> {
         let subject = PassthroughSubject<Void, Error>()
 
-        executor.readAsync { realm in
+        executor.readAsync { [weak self] realm in
             var collection = realm.objects(type.self)
             if let query = query {
                 collection = collection.where(query.query)
             }
 
             let keyPaths = keyPaths?.map(_name(for:))
-            return collection.observe(keyPaths: keyPaths) { changes in
+            let token = collection.observe(keyPaths: keyPaths) { [weak subject] changes in
                 switch changes {
                 case .initial, .update:
-                    subject.send(())
+                    subject?.send(())
                 case let .error(error):
-                    subject.send(completion: .failure(error))
+                    subject?.send(completion: .failure(error))
                 }
             }
-        } completion: { result in
+
+            // Store the token to keep the observation alive
+            self?.addToken(token)
+            return token
+        } completion: { [weak subject] result in
             switch result {
-            case .success:
+            case .success(let token):
+                // Token is now stored and observation is active
                 break
             case .failure(let error):
-                subject.send(completion: .failure(error))
+                subject?.send(completion: .failure(error))
             }
         }
 
-        return subject.eraseToAnyPublisher()
+        return subject
+            .handleEvents(
+                receiveSubscription: { _ in
+                    // Keep reference to self to ensure tokens are maintained
+                },
+                receiveCompletion: { [weak self] completion in
+                    // Remove all tokens when publisher completes
+                    self?.tokensQueue.async(flags: .barrier) { [weak self] in
+                        self?.tokens.removeAll()
+                    }
+                },
+                receiveCancel: { [weak subject] in
+                    // Properly finish the publisher when cancelled
+                    subject?.send(completion: .finished)
+                    // Note: tokens will be cleaned up in deinit if needed
+                }
+            )
+            .eraseToAnyPublisher()
     }
 
     func writeTransaction<Model>(
