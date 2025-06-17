@@ -12,7 +12,9 @@ class VoiceChatComponent: DIComponent {
 extension VoiceChatComponent: VoiceChatCoordinatorElementsFactory {
     func voiceChatVM() -> VoiceChatVM {
         VoiceChatVM(
-            memoryController: resolve()
+            elevenlabsController: resolve(),
+            memoryController: resolve(),
+            screenSleepController: resolve()
         )
     }
 }
