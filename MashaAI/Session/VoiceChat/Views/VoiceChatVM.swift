@@ -62,6 +62,7 @@ final class VoiceChatVM: ObservableObject {
 
         setupEventHandling()
         setupStateBinding()
+        setupErrorObserving()
     }
 
     // MARK: - Public Methods
@@ -139,7 +140,7 @@ final class VoiceChatVM: ObservableObject {
             .store(in: &cancellables)
     }
 
-    private func setupErrorOBserver() {
+    private func setupErrorObserving() {
         elevenlabsController.errorEvent
             .receive(on: DispatchQueue.main)
             .sink { [weak self] event in

@@ -241,7 +241,7 @@ final class ElevenLabsController: ElevenLabsControlling {
         callbacks.onModeChange = { [weak self] newMode in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                print("🎤 Mode changed: \(self.currentMode) → \(newMode)")
+                print("🎤 Mode changed: \(self.currentModeSubject.value) → \(newMode)")
 
                 self.currentModeSubject.value = newMode
                 self.eventsSubject.send(.modeChanged(newMode))

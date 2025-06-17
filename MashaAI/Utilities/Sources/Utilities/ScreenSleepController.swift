@@ -10,9 +10,6 @@ public protocol ScreenSleepControlling {
 /// Контроллер для управления блокировкой экрана устройства
 public final class ScreenSleepController: ScreenSleepControlling {
 
-    /// Статический экземпляр для глобального использования
-    public static let shared = ScreenSleepController()
-
     /// Текущее состояние блокировки экрана
     @Published public private(set) var isScreenSleepDisabled: Bool = false
 
@@ -21,6 +18,8 @@ public final class ScreenSleepController: ScreenSleepControlling {
 
     /// Cancellables для подписок на уведомления
     private var cancellables = Set<AnyCancellable>()
+
+    deinit { enableScreenSleep() }
 
     public init() {
         setupAppStateObservation()
