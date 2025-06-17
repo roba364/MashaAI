@@ -36,7 +36,15 @@ final class MemoryController: MemoryControlling {
     func observeMemories() -> AnyPublisher<[Memory], Never> {
         repository.observeChanges()
             .asyncMap { [weak self] _ in
-                await self?.repository.getAll() ?? []
+                guard let self else { return [] }
+
+                let all = await self.repository.getAll()
+
+                await MainActor.run {
+                    self.memories = all
+                }
+
+                return all
             }
             .replaceError(with: [])
             .receive(on: DispatchQueue.main)
