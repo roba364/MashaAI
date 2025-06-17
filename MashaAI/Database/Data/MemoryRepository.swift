@@ -29,7 +29,7 @@ final class MemoryRepository: MemoryRepositoring {
         let entities = memories.map { $0.toEntity() }
 
         try await databaseStorage.writeTransaction { context in
-            context.add(entities, update: .modified)
+            context.add(entities)
         }
     }
 
