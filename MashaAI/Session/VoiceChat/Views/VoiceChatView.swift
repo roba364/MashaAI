@@ -1,6 +1,7 @@
 import Combine
 import ElevenLabsSDK
 import SwiftUI
+import Utilities
 
 struct VoiceChatView: View {
 
@@ -36,24 +37,30 @@ struct VoiceChatView: View {
             guard error != nil else { return }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak viewModel] in
-                viewModel?.viewState = .loading
+                viewModel?.viewState = .idle
             }
         }
         .task {
             await viewModel.onAppear()
+        }
+        .onAppear {
+            // Отключаем блокировку экрана при входе на экран голосового чата
+            viewModel.screenSleepController.disableScreenSleep()
         }
         .onDisappear {
             print("🏃‍♂️ View disappearing, cleaning up...")
             // Останавливаем анимации для предотвращения утечек памяти
             stopAllAnimations()
             viewModel.stopConversation()
+            // Включаем обратно блокировку экрана при выходе с экрана
+            viewModel.screenSleepController.enableScreenSleep()
         }
     }
 
     @ViewBuilder
     private func content(for viewState: VoiceChatVM.ViewState) -> some View {
         switch viewState {
-        case .appearing:
+        case .loading:
             HStack(spacing: 4) {
                 Text("Загрузка")
                     .typography(.M1.superBold)
@@ -62,7 +69,7 @@ struct VoiceChatView: View {
                 LoadingDotsView()
             }
 
-        case .error, .connected, .loading:
+        case .listening, .idle, .connecting:
             ZStack {
                 LinearGradient(
                     stops: .voiceChatBackground,
@@ -146,9 +153,10 @@ struct VoiceChatView: View {
     @ViewBuilder
     private func bottomView() -> some View {
         switch viewModel.viewState {
-        case .appearing:
+        case .loading:
             EmptyView()
-        case .error, .connected, .loading:
+
+        case .listening, .idle, .connecting:
             VStack(spacing: 24) {
                 indicatorView()
                     .padding(.top, 30)
@@ -160,6 +168,7 @@ struct VoiceChatView: View {
                 }
                 .buttonStyle(.plain)
                 .animateAppear(.optionButton(delay: 0.4))
+                .disabled(viewModel.viewState == .connecting)
             }
             .frame(maxWidth: .infinity, alignment: .bottom)
             .frame(height: 280)
@@ -181,8 +190,19 @@ struct VoiceChatView: View {
                 .typography(.M1.bold)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
-                .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
-                .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
+                .scaleEffect(
+                    viewModel.viewState == .idle ? 1.0 : 0.7
+                )
+                .opacity(
+                    viewModel.viewState == .idle ? 1.0 : 0.0
+                )
+                .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
+
+            Text("Загрузка...")
+                .typography(.M1.bold)
+                .foregroundStyle(.white)
+                .scaleEffect(viewModel.viewState == .connecting ? 1.0 : 0.7)
+                .opacity(viewModel.viewState == .connecting ? 1.0 : 0.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
 
             VStack(spacing: 12) {
@@ -193,54 +213,19 @@ struct VoiceChatView: View {
                 // Дополнительная анимация при речи AI
                 .scaleEffect(viewModel.isAISpeaking ? 1.2 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
-                //                .overlay(alignment: .trailing) {
-                //                    // Статус AI
-                //                    Text(statusText)
-                //                        .typography(.M1.regular)
-                //                        .foregroundStyle(statusColor)
-                //                        .multilineTextAlignment(.center)
-                //                        .animation(.easeInOut(duration: 0.3), value: viewModel.isAISpeaking)
-                //                        .offset(x: 70)
-                //                }
             }
-            .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
-            .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
+            .scaleEffect(viewModel.viewState == .listening ? 1.0 : 0.7)
+            .opacity(viewModel.viewState == .listening ? 1.0 : 0.0)
             .animation(
-                .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
+                .easeInOut(duration: 0.3).delay(viewModel.viewState == .listening ? 0.15 : 0.0),
                 value: viewModel.viewState
             )
         }
     }
 
-    private var statusText: String {
-        if viewModel.isAISpeaking {
-            return "🗣️ Маша говорит..."
-        } else {
-            switch viewModel.mode {
-            case .listening:
-                return "👂 Маша слушает"
-            case .speaking:
-                return "🎤 Говорите"
-            }
-        }
-    }
-
-    private var statusColor: Color {
-        if viewModel.isAISpeaking {
-            return .green
-        } else {
-            switch viewModel.mode {
-            case .listening:
-                return .blue
-            case .speaking:
-                return .orange
-            }
-        }
-    }
-
     @ViewBuilder
     private func alertView() -> some View {
-        if case .error = viewModel.viewState {
+        if let lastError = viewModel.lastError {
             VStack {
                 Image(.alert)
                     .resizable()
@@ -255,9 +240,9 @@ struct VoiceChatView: View {
         playHaptic(.light)
 
         switch viewModel.viewState {
-        case .loading, .error:
+        case .idle:
             viewModel.beginConversation()
-        case .connected:
+        case .listening:
             viewModel.stopConversation()
         default:
             break
@@ -272,8 +257,8 @@ struct VoiceChatView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 202, height: 105)
-                .scaleEffect(viewModel.viewState == .connected ? 0.7 : 1.0)
-                .opacity(viewModel.viewState == .connected ? 0.0 : 1.0)
+                .scaleEffect(viewModel.viewState == .listening ? 0.7 : 1.0)
+                .opacity(viewModel.viewState == .listening ? 0.0 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: viewModel.viewState)
 
             // Stop Button
@@ -281,10 +266,10 @@ struct VoiceChatView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 202, height: 105)
-                .scaleEffect(viewModel.viewState == .connected ? 1.0 : 0.7)
-                .opacity(viewModel.viewState == .connected ? 1.0 : 0.0)
+                .scaleEffect(viewModel.viewState == .listening ? 1.0 : 0.7)
+                .opacity(viewModel.viewState == .listening ? 1.0 : 0.0)
                 .animation(
-                    .easeInOut(duration: 0.3).delay(viewModel.viewState == .connected ? 0.15 : 0.0),
+                    .easeInOut(duration: 0.3).delay(viewModel.viewState == .listening ? 0.15 : 0.0),
                     value: viewModel.viewState)
         }
     }
@@ -346,34 +331,4 @@ struct LoadingDotsView: View {
         timer?.invalidate()
         timer = nil
     }
-}
-
-#Preview {
-    final class MemoryController: MemoryControlling {
-        func addMemory(_ memory: Memory) async throws {}
-
-        func getMemories() async -> [Memory] {
-            []
-        }
-
-        func getRecentMemories(limit: Int) async -> [Memory] {
-            []
-        }
-
-        func clearMemories() async throws {}
-
-        func observeMemories() -> AnyPublisher<[Memory], Never> {
-            Just([]).eraseToAnyPublisher()
-        }
-
-        func getContextForAI(maxMessages: Int) async -> String {
-            ""
-        }
-    }
-
-    return VoiceChatView(
-        viewModel: VoiceChatVM(
-            memoryController: MemoryController()
-        )
-    )
 }

@@ -1,5 +1,6 @@
 import Foundation
 import Swinject
+import Utilities
 
 @MainActor
 class AppComponent: BootstrapDIComponent {
@@ -30,6 +31,16 @@ class AppComponent: BootstrapDIComponent {
             RealmStorage(
                 realmProvider: .main
             )
+        }
+        .inObjectScope(.container)
+
+        container.register(ElevenLabsControlling.self) { _ in
+            ElevenLabsController()
+        }
+        .inObjectScope(.container)
+
+        container.register(ScreenSleepControlling.self) { _ in
+            ScreenSleepController()
         }
         .inObjectScope(.container)
     }

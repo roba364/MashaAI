@@ -1,15 +1,18 @@
 import Combine
 import ElevenLabsSDK
 import Foundation
+import Utilities
 
 final class VoiceChatVM: ObservableObject {
 
     enum ViewState {
-        case appearing
+        case idle
+        case connecting
         case loading
-        case connected
-        case error
+        case listening
     }
+
+    // MARK: - Published View States
 
     @Published
     private(set) var status: ElevenLabsSDK.Status = .disconnected
@@ -30,211 +33,47 @@ final class VoiceChatVM: ObservableObject {
     private(set) var audioLevel: Float = 0.0
 
     @Published
-    var viewState: ViewState = .appearing
+    var viewState: ViewState = .loading
 
-    // Новые свойства для отслеживания состояния речи AI
     @Published
     private(set) var isAISpeaking: Bool = false
 
-    private let config = ElevenLabsSDK.SessionConfig(agentId: "w63wjugjg9aztG1H9JDa")
-    private let memoryController: MemoryControlling
-    private var currentAgentIndex = 0
-    private var conversation: ElevenLabsSDK.Conversation?
-    private var connectionTask: Task<Void, Never>?
+    // MARK: - Dependencies
 
-    init(memoryController: MemoryControlling) {
+    let screenSleepController: ScreenSleepControlling
+
+    private let elevenlabsController: ElevenLabsControlling
+    private let memoryController: MemoryControlling
+
+    // MARK: - Private Properties
+
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialization
+
+    init(
+        elevenlabsController: ElevenLabsControlling,
+        memoryController: MemoryControlling,
+        screenSleepController: ScreenSleepControlling
+    ) {
+        self.elevenlabsController = elevenlabsController
         self.memoryController = memoryController
+        self.screenSleepController = screenSleepController
+
+        setupEventHandling()
+        setupStateBinding()
     }
+
+    // MARK: - Public Methods
 
     func onAppear() async {
-        try? await Task.sleep(nanoseconds: 3_000_000_000)  // 1 секунда
+        try? await Task.sleep(nanoseconds: 3_000_000_000)  // 3 seconds
         await MainActor.run {
-            viewState = .loading
+            viewState = .idle
         }
-    }
-
-    private func startConnection(agent: Agent) async {
-        do {
-            let memories = await memoryController.getContextForAI(maxMessages: 100)
-
-            // Увеличиваем задержку для стабильности
-            try await Task.sleep(nanoseconds: 1_000_000_000)  // 1 секунда
-
-            // Проверяем, не была ли отменена задача
-            try Task.checkCancellation()
-
-            // Упрощенная конфигурация без переопределений
-            let config = ElevenLabsSDK.SessionConfig(
-                agentId: agent.id,
-                dynamicVariables: [
-                    "recent_topics": .string(memories)
-                ]
-            )
-
-            var callbacks = ElevenLabsSDK.Callbacks()
-
-            callbacks.onConnect = { [weak self] conversationId in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-                    self.viewState = .connected
-                    print("✅ Connected successfully with ID: \(conversationId)")
-                    self.status = .connected
-                    self.isConnecting = false
-                    self.connectionRetryCount = 0
-                    self.lastError = nil
-                }
-            }
-
-            callbacks.onDisconnect = { [weak self] in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-
-                    print("🔌 Disconnected")
-                    if self.status == .connected {
-                        // Неожиданное отключение
-                        self.lastError = "Connection lost unexpectedly"
-                    }
-                    self.stopConversation()
-                }
-            }
-
-            callbacks.onMessage = { [weak self] message, role in
-                // Используем Task для async операций внутри синхронного колбэка
-                Task {
-                    do {
-                        let memory = Memory(
-                            message: message,
-                            sender: MemorySender(role: role)
-                        )
-                        try await self?.memoryController.addMemory(memory)
-                    } catch {
-                        print("❌ Error saving memory: \(error)")
-                    }
-                }
-            }
-
-            callbacks.onError = { [weak self] errorMessage, errorCode in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-                    print("❌ Error (\(errorCode ?? -1)): \(errorMessage)")
-
-                    //                    self.viewState = .error
-
-                    // Игнорируем ошибки, связанные с коррекцией ответов агента (при перебивании)
-                    if self.isAgentCorrectionError(errorMessage) {
-                        print("ℹ️ Agent response correction detected - this is normal when interrupting")
-                        return
-                    }
-
-                    self.lastError = errorMessage
-
-                    // Проверяем, стоит ли повторить попытку
-                    if self.shouldRetryConnection(errorMessage: errorMessage) && self.connectionRetryCount < 2
-                    {
-                    self.connectionRetryCount += 1
-                    print("🔄 Will retry connection (\(self.connectionRetryCount)/2) in 3 seconds...")
-
-                    // Увеличиваем интервал между попытками
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                        if !self.isConnecting && self.status != .connected {
-                            self.connectionTask = Task {
-                                await self.startConnection(agent: agent)
-                            }
-                        }
-                    }
-                    } else {
-                        print("💥 Max retries reached or non-retryable error")
-                        self.stopConversation()
-                    }
-                }
-            }
-
-            callbacks.onStatusChange = { [weak self] newStatus in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-
-                    print("📊 Status changed: \(newStatus)")
-                    self.status = newStatus
-
-                    if newStatus == .disconnected {
-                        self.isConnecting = false
-                    }
-                }
-            }
-
-            callbacks.onModeChange = { [weak self] newMode in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-
-                    let previousMode = self.mode
-                    print("🎤 Mode changed: \(previousMode) → \(newMode)")
-                    //                    print("📊 Current isAISpeaking: \(self.isAISpeaking)")
-                    //                    print(
-                    //                        "📊 Raw mode values - Previous: \(String(describing: previousMode)), New: \(String(describing: newMode))"
-                    //                    )
-
-                    self.mode = newMode
-
-                    // Отслеживаем переходы состояний для определения начала/конца речи AI
-                    self.handleModeTransition(from: previousMode, to: newMode)
-
-                    // Дополнительная проверка текущего состояния
-                    self.updateAISpeakingStateBasedOnMode(newMode)
-
-                    print("📊 After transition isAISpeaking: \(self.isAISpeaking)")
-                }
-            }
-
-            callbacks.onVolumeUpdate = { [weak self] newVolume in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-
-                    self.audioLevel = max(0, min(1, newVolume))
-                }
-            }
-
-            // Пытаемся установить соединение
-            conversation = try await ElevenLabsSDK.Conversation.startSession(
-                config: config,
-                callbacks: callbacks
-            )
-
-        } catch {
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                print("💥 Failed to start conversation: \(error.localizedDescription)")
-                self.lastError = error.localizedDescription
-                self.stopConversation()
-            }
-        }
-    }
-
-    func stopConversation() {
-        print("🧹 Cleaning up conversation...")
-
-        // Отменяем активную задачу подключения
-        connectionTask?.cancel()
-        connectionTask = nil
-
-        // Завершаем сессию
-        if let conv = conversation {
-            conv.endSession()
-        }
-        conversation = nil
-
-        // Сбрасываем состояние
-        status = .disconnected
-        isConnecting = false
-        audioLevel = 0.0
-        mode = .listening
-
-        // Сбрасываем состояние речи AI
-        isAISpeaking = false
     }
 
     func beginConversation() {
-        let agent = Agent.masha
-        // Предотвращаем множественные подключения
         guard !isConnecting else {
             print("⚠️ Connection already in progress, skipping...")
             return
@@ -242,18 +81,22 @@ final class VoiceChatVM: ObservableObject {
 
         if status == .connected {
             print("🔌 Disconnecting current session...")
-            stopConversation()
+            elevenlabsController.stopConversation()
             return
         }
 
-        // Сбрасываем предыдущие ошибки и счетчик
+        // Reset states
         lastError = nil
         connectionRetryCount = 0
-        isConnecting = true
 
-        connectionTask = Task {
-            await startConnection(agent: agent)
+        Task {
+            let memories = await memoryController.getContextForAI(maxMessages: 100)
+            await elevenlabsController.startConversation(with: .masha, context: memories)
         }
+    }
+
+    func stopConversation() {
+        elevenlabsController.stopConversation()
     }
 
     // MARK: - Debug Methods
@@ -273,13 +116,127 @@ final class VoiceChatVM: ObservableObject {
         updateAISpeakingStateBasedOnMode(.listening)
     }
 
+    // MARK: - Private Methods
+
+    private func setupEventHandling() {
+        elevenlabsController.events
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                self?.handleElevenLabsEvent(event)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func setupStateBinding() {
+        elevenlabsController.currentStatus
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.status, on: self)
+            .store(in: &cancellables)
+
+        elevenlabsController.isConnecting
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isConnecting, on: self)
+            .store(in: &cancellables)
+    }
+
+    private func setupErrorOBserver() {
+        elevenlabsController.errorEvent
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                switch event {
+                case let .error(message, shouldRetry):
+                    guard let self else { return }
+                    print("❌ Error: \(message), shouldRetry: \(shouldRetry)")
+                    lastError = message
+
+                    if shouldRetry {
+                        connectionRetryCount += 1
+
+                        // Auto clear error after 5 seconds to return to loading state
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                            guard let self = self else { return }
+                            if self.lastError == message {
+                                self.lastError = nil
+                                if self.status == .disconnected {
+                                    self.viewState = .idle
+                                }
+                            }
+                        }
+                    } else {
+                        // Non-retryable error
+                        viewState = .idle
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func handleElevenLabsEvent(_ event: ElevenLabsEvent) {
+        switch event {
+        case .connected(let conversationId):
+            print("✅ Connected successfully with ID: \(conversationId)")
+            viewState = .listening
+            lastError = nil
+            connectionRetryCount = 0
+
+        case .disconnected:
+            print("🔌 Disconnected")
+            resetViewState()
+
+        case .statusChanged(let newStatus):
+            // Status is already bound via publisher
+            if newStatus == .disconnected {
+                resetViewState()
+            }
+
+        case .modeChanged(let newMode):
+            let previousMode = mode
+            mode = newMode
+            handleModeTransition(from: previousMode, to: newMode)
+            updateAISpeakingStateBasedOnMode(newMode)
+
+        case .volumeUpdated(let volume):
+            audioLevel = volume
+
+        case .messageReceived(let message, let role):
+            handleNewMessage(message: message, role: role)
+
+        case .connecting:
+            viewState = .connecting
+        }
+    }
+
+    private func handleNewMessage(message: String, role: ElevenLabsSDK.Role) {
+        Task {
+            do {
+                let memory = Memory(
+                    message: message,
+                    sender: MemorySender(role: role)
+                )
+                try await memoryController.addMemory(memory)
+            } catch {
+                print("❌ Error saving memory: \(error)")
+            }
+        }
+    }
+
+    private func resetViewState() {
+        audioLevel = 0.0
+        mode = .listening
+        isAISpeaking = false
+
+        // If we were connected, this might be unexpected
+        if viewState == .listening {
+            viewState = .idle
+        }
+    }
+
     // MARK: - AI Speaking State Tracking
 
     private func handleModeTransition(
-        from previousMode: ElevenLabsSDK.Mode, to newMode: ElevenLabsSDK.Mode
+        from previousMode: ElevenLabsSDK.Mode,
+        to newMode: ElevenLabsSDK.Mode
     ) {
-        //        print("🔄 Processing mode transition: \(previousMode) → \(newMode)")
-
         switch (previousMode, newMode) {
         case (.listening, .speaking):
             isAISpeaking = true
@@ -296,12 +253,12 @@ final class VoiceChatVM: ObservableObject {
         default:
             print("🔄 Other transition: \(previousMode) → \(newMode)")
 
-            // Добавляем обработку для любых других переходов в .speaking
+            // Handle any other transitions to .speaking
             if newMode == .speaking && !isAISpeaking {
                 isAISpeaking = true
             }
 
-            // Добавляем обработку для любых других переходов в .listening
+            // Handle any other transitions to .listening
             if newMode == .listening && isAISpeaking {
                 isAISpeaking = false
             }
@@ -321,64 +278,9 @@ final class VoiceChatVM: ObservableObject {
             }
         }
     }
-
-    private func isAgentCorrectionError(_ errorMessage: String) -> Bool {
-        let correctionIndicators = [
-            "agent_response_correction",
-            "Unknown message type",
-            "corrected_agent_response",
-            "original_agent_response",
-        ]
-
-        let errorLower = errorMessage.lowercased()
-        return correctionIndicators.contains { errorLower.contains($0.lowercased()) }
-    }
-
-    private func shouldRetryConnection(errorMessage: String) -> Bool {
-        let retryableErrors = [
-            "Socket is not connected",
-            "WebSocket error",
-            "Connection failed",
-            "Network error",
-            "timeout",
-        ]
-
-        // Не повторяем при ошибках аутентификации, неверных конфигурациях или коррекциях агента
-        let nonRetryableErrors = [
-            "unauthorized",
-            "forbidden",
-            "invalid agent",
-            "rate limit",
-            "agent_response_correction",
-            "Unknown message type",
-        ]
-
-        let errorLower = errorMessage.lowercased()
-
-        // Сначала проверяем не-повторяемые ошибки
-        if nonRetryableErrors.contains(where: { errorLower.contains($0) }) {
-            return false
-        }
-
-        // Затем проверяем повторяемые
-        return retryableErrors.contains { errorLower.contains($0) }
-    }
 }
 
-// MARK: - Types and Preview
-struct Agent {
-    let id: String
-    let name: String
-    let description: String
-}
-
-extension Agent {
-    static let masha: Self = .init(
-        id: "w63wjugjg9aztG1H9JDa",
-        name: "Masha",
-        description: "AI Assistant"
-    )
-}
+// MARK: - Memory Sender Extension
 
 extension MemorySender {
     fileprivate init(role: ElevenLabsSDK.Role) {
@@ -390,3 +292,4 @@ extension MemorySender {
         }
     }
 }
+
