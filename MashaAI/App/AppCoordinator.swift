@@ -18,7 +18,7 @@ final class AppCoordinator: ObservableObject {
     @Published
     private(set) var viewState: ViewState?
 
-    private var isOnboardingShown: Bool = true
+    private var isOnboardingShown: Bool = false
 
     init(elementsFactory: AppCoordinatorElementsFactory) {
         self.elementsFactory = elementsFactory
